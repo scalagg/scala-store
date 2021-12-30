@@ -1,0 +1,59 @@
+plugins {
+    id 'maven-publish'
+    id 'net.kyori.blossom' version '1.1.0'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.0'
+}
+
+allprojects {
+    group 'gg.scala.store'
+    version '0.1.0'
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+
+        maven { url "https://repo.lucko.me" }
+    }
+}
+
+subprojects {
+    apply plugin: "maven-publish"
+    apply plugin: "net.kyori.blossom"
+    apply plugin: "com.github.johnrengelman.shadow"
+    apply plugin: "org.jetbrains.kotlin.jvm"
+
+    dependencies {
+        compileOnly "org.jetbrains.kotlin:kotlin-stdlib"
+
+        compileOnly "gg.scala.lemon:bukkit:1.0.0"
+
+        compileOnly fileTree("library")
+        compileOnly "me.lucko:helper:5.6.8"
+    }
+
+    compileKotlin {
+        kotlinOptions.javaParameters = true
+        kotlinOptions.jvmTarget = "1.8"
+    }
+
+    shadowJar {
+        archiveClassifier.set("")
+
+        exclude "**/*.kotlin_metadata"
+        exclude "**/*.kotlin_builtins"
+        exclude "META-INF/"
+
+        archiveFileName = "store-${project.name}.jar"
+    }
+
+    publishing {
+        publications {
+            shadow(MavenPublication) { publication ->
+                project.shadow.component(publication)
+            }
+        }
+    }
+
+    tasks.build.dependsOn(shadowJar, publishing)
+}
