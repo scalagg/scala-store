@@ -7,7 +7,7 @@ import java.io.Closeable
  * @author GrowlyX
  * @since 12/30/2021
  */
-abstract class AbstractDataStoreConnection<C> : Closeable
+abstract class AbstractDataStoreConnection<C, R> : Closeable
 {
     companion object
     {
@@ -16,6 +16,9 @@ abstract class AbstractDataStoreConnection<C> : Closeable
             AbstractDataStoreConnection::class.java
         )
     }
+
+    abstract fun useResource(lambda: R.() -> Unit)
+    abstract fun <T> useResourceWithReturn(lambda: R.() -> T): T
 
     abstract fun getConnection(): C
     abstract fun setConnection(connection: C)

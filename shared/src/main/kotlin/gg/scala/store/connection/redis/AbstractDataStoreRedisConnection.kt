@@ -1,6 +1,7 @@
 package gg.scala.store.connection.redis
 
 import gg.scala.store.connection.AbstractDataStoreConnection
+import redis.clients.jedis.Jedis
 import redis.clients.jedis.JedisPool
 import java.io.IOException
 import kotlin.properties.Delegates
@@ -9,11 +10,33 @@ import kotlin.properties.Delegates
  * @author GrowlyX
  * @since 12/30/2021
  */
-abstract class AbstractDataStoreRedisConnection : AbstractDataStoreConnection<JedisPool>()
+abstract class AbstractDataStoreRedisConnection : AbstractDataStoreConnection<JedisPool, Jedis>()
 {
-    private var handle by Delegates.notNull<JedisPool>()
+    internal var handle by Delegates.notNull<JedisPool>()
+
+    abstract fun getAppliedResource(): Jedis
 
     override fun getConnection() = handle
+
+    override fun useResource(lambda: Jedis.() -> Unit)
+    {
+        val applied = getAppliedResource()
+        lambda.invoke(applied)
+
+        applied.close()
+    }
+
+    override fun <T> useResourceWithReturn(
+        lambda: Jedis.() -> T
+    ): T
+    {
+        val applied = getAppliedResource()
+
+        val resource = lambda.invoke(applied)
+        applied.close()
+
+        return resource
+    }
 
     /**
      * The current [JedisPool] should be closed before
