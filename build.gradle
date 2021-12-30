@@ -1,12 +1,12 @@
 plugins {
-    id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
-    id 'org.jetbrains.kotlin.jvm' version '1.6.0'
+    id "maven-publish"
+    id "com.github.johnrengelman.shadow" version "6.1.0"
+    id "org.jetbrains.kotlin.jvm" version "1.6.0"
 }
 
 allprojects {
-    group 'gg.scala.store'
-    version '0.1.0'
+    group "gg.scala.store"
+    version "0.1.0"
 
     repositories {
         mavenCentral()
@@ -24,10 +24,9 @@ subprojects {
     dependencies {
         compileOnly "org.jetbrains.kotlin:kotlin-stdlib"
 
-        compileOnly "gg.scala.lemon:bukkit:1.0.0"
-
-        compileOnly fileTree("library")
-        compileOnly "me.lucko:helper:5.6.8"
+        compileOnly "redis.clients:jedis:4.0.1"
+        compileOnly "org.mongodb:mongo-java-driver:3.12.10"
+        compileOnly "com.google.code.gson:gson:2.8.9"
     }
 
     compileKotlin {
