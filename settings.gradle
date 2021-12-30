@@ -1,2 +1,4 @@
 rootProject.name = 'data-store-kt'
-
+include 'shared'
+include 'spigot'
+include 'velocity'
