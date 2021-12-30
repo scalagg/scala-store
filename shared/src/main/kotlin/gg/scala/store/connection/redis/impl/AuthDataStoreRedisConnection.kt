@@ -17,16 +17,10 @@ class AuthDataStoreRedisConnection(
 {
     override fun getAppliedResource(): Jedis
     {
-        return try
-        {
-            val resource = handle.resource
-            resource.auth(details.password!!)
+        val resource = handle.resource
+        resource.auth(details.password!!)
 
-            resource
-        } catch (exception: JedisException)
-        {
-            throw IOException("Failed to use resource")
-        }
+        return resource
     }
 
     override fun createNewConnection(): JedisPool

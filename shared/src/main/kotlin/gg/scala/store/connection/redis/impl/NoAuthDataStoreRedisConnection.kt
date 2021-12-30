@@ -17,13 +17,7 @@ class NoAuthDataStoreRedisConnection(
 {
     override fun getAppliedResource(): Jedis
     {
-        return try
-        {
-            handle.resource
-        } catch (exception: JedisException)
-        {
-            throw IOException("Failed to use resource")
-        }
+        return handle.resource
     }
 
     override fun createNewConnection(): JedisPool

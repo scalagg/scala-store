@@ -18,7 +18,7 @@ abstract class AbstractDataStoreConnection<C, R> : Closeable
     }
 
     abstract fun useResource(lambda: R.() -> Unit)
-    abstract fun <T> useResourceWithReturn(lambda: R.() -> T): T
+    abstract fun <T> useResourceWithReturn(lambda: R.() -> T): T?
 
     abstract fun getConnection(): C
     abstract fun setConnection(connection: C)
