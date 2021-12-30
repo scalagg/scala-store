@@ -1,9 +1,12 @@
 package gg.scala.store.connection.mongo
 
 import com.mongodb.MongoClient
+import com.mongodb.MongoException
 import com.mongodb.client.MongoDatabase
 import gg.scala.store.connection.AbstractDataStoreConnection
+import redis.clients.jedis.Jedis
 import redis.clients.jedis.JedisPool
+import redis.clients.jedis.exceptions.JedisException
 import kotlin.properties.Delegates
 
 /**
@@ -14,5 +17,53 @@ abstract class AbstractDataStoreMongoConnection : AbstractDataStoreConnection<Mo
 {
     internal var handle by Delegates.notNull<MongoClient>()
 
+    abstract fun getAppliedResource(): MongoDatabase
 
+    override fun useResource(lambda: MongoDatabase.() -> Unit)
+    {
+        try
+        {
+            val applied = getAppliedResource()
+            lambda.invoke(applied)
+        } catch (exception: JedisException)
+        {
+            LOGGER.logSevereException(exception)
+        }
+    }
+
+    override fun <T> useResourceWithReturn(
+        lambda: MongoDatabase.() -> T
+    ): T?
+    {
+        return try
+        {
+            lambda.invoke(
+                getAppliedResource()
+            )
+        } catch (exception: MongoException)
+        {
+            LOGGER.logSevereException(exception)
+            null
+        }
+    }
+
+    override fun getConnection() = handle
+
+    override fun setConnection(connection: MongoClient)
+    {
+        try
+        {
+            close()
+        } catch (exception: Exception)
+        {
+            LOGGER.logSevereException(exception)
+        }
+
+        handle = connection
+    }
+
+    override fun close()
+    {
+        handle.close()
+    }
 }

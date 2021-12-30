@@ -1,11 +1,10 @@
 package gg.scala.store.connection.redis.impl
 
 import gg.scala.store.connection.redis.AbstractDataStoreRedisConnection
+import gg.scala.store.connection.mongo.impl.details.DataStoreMongoConnectionDetails
 import gg.scala.store.connection.redis.impl.details.DataStoreRedisConnectionDetails
 import redis.clients.jedis.Jedis
 import redis.clients.jedis.JedisPool
-import redis.clients.jedis.exceptions.JedisException
-import java.io.IOException
 
 /**
  * @author GrowlyX
