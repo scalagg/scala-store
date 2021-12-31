@@ -1,6 +1,7 @@
 package gg.scala.store.velocity
 
 import com.google.inject.Inject
+import com.velocitypowered.api.event.PostOrder
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.plugin.annotation.DataDirectory
@@ -50,9 +51,11 @@ constructor(
         INSTANCE = this
     }
 
-    @Subscribe
+    @Subscribe(order = PostOrder.FIRST)
     fun onProxyInit(event: ProxyInitializeEvent)
     {
+        VelocitySettingsProcessor.initialLoad()
+
         VelocitySettingsProcessor
             .loadSettings<ScalaDataStoreVelocitySettings>("settings")
 

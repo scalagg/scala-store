@@ -10,7 +10,7 @@ import java.util.concurrent.CompletableFuture
  * @since 12/30/2021
  */
 abstract class AbstractDataStoreStorageLayer<C : AbstractDataStoreConnection<*, *>, D : IDataStoreObject>(
-    internal val connection: C
+    val connection: C
 )
 {
     abstract fun saveSync(data: D)
