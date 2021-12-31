@@ -1,6 +1,7 @@
 package gg.scala.store.connection.mongo.impl
 
 import com.mongodb.MongoClient
+import com.mongodb.MongoClientURI
 import com.mongodb.client.MongoDatabase
 import gg.scala.store.connection.mongo.AbstractDataStoreMongoConnection
 import gg.scala.store.connection.mongo.impl.details.DataStoreMongoConnectionDetails
@@ -30,6 +31,8 @@ class UriDataStoreMongoConnection(
 
     override fun createNewConnection(): MongoClient
     {
-        return MongoClient(details.uri)
+        return MongoClient(
+            MongoClientURI(details.uri)
+        )
     }
 }

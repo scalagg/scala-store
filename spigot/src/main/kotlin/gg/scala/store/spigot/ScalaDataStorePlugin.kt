@@ -1,6 +1,7 @@
 package gg.scala.store.spigot
 
 import gg.scala.store.ScalaDataStoreShared
+import gg.scala.store.connection.AbstractDataStoreConnection
 import gg.scala.store.controller.DataStoreObjectControllerCache
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -14,17 +15,9 @@ class ScalaDataStorePlugin : JavaPlugin()
     {
         ScalaDataStoreShared.INSTANCE = ScalaDataStoreSpigotImpl
 
-        ScalaDataStoreSpigotImpl.getNewMongoConnection()
-            .setConnection(
-                ScalaDataStoreSpigotImpl.getNewMongoConnection()
-                    .createNewConnection()
-            )
-
-        ScalaDataStoreSpigotImpl.getNewRedisConnection()
-            .setConnection(
-                ScalaDataStoreSpigotImpl.getNewRedisConnection()
-                    .createNewConnection()
-            )
+        AbstractDataStoreConnection.LOGGER.info(
+            "DataStore spigot has been setup."
+        )
     }
 
     override fun onDisable()
