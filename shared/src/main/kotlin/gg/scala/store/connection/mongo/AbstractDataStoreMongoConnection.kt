@@ -27,7 +27,7 @@ abstract class AbstractDataStoreMongoConnection : AbstractDataStoreConnection<Mo
             lambda.invoke(applied)
         } catch (exception: JedisException)
         {
-            LOGGER.logSevereException(exception)
+            LOGGER.info(exception.stackTraceToString())
         }
     }
 

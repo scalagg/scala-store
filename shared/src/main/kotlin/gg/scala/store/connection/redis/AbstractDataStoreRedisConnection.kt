@@ -29,7 +29,7 @@ abstract class AbstractDataStoreRedisConnection : AbstractDataStoreConnection<Je
             applied.close()
         } catch (exception: JedisException)
         {
-            LOGGER.logSevereException(exception)
+            LOGGER.info(exception.stackTraceToString())
         }
     }
 
@@ -47,7 +47,7 @@ abstract class AbstractDataStoreRedisConnection : AbstractDataStoreConnection<Je
             resource
         } catch (exception: JedisException)
         {
-            LOGGER.logSevereException(exception)
+            LOGGER.info(exception.stackTraceToString())
             null
         }
     }
