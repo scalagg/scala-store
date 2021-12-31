@@ -23,5 +23,5 @@ abstract class AbstractDataStoreConnection<C, R> : Closeable
     abstract fun getConnection(): C
     abstract fun setConnection(connection: C)
 
-    protected abstract fun createNewConnection(): C
+    abstract fun createNewConnection(): C
 }

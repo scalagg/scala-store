@@ -52,23 +52,8 @@ abstract class AbstractDataStoreRedisConnection : AbstractDataStoreConnection<Je
         }
     }
 
-    /**
-     * The current [JedisPool] should be closed before
-     * we replace it with the new connection.
-     *
-     * New connections should not be created if the
-     * current connection was successful.
-     */
     override fun setConnection(connection: JedisPool)
     {
-        try
-        {
-            close()
-        } catch (exception: Exception)
-        {
-            LOGGER.logSevereException(exception)
-        }
-
         handle = connection
     }
 

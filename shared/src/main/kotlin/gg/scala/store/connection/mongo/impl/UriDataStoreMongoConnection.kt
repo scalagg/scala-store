@@ -15,10 +15,20 @@ class UriDataStoreMongoConnection(
 {
     override fun getAppliedResource(): MongoDatabase
     {
-        return handle.getDatabase(details.database)
+        return try
+        {
+            getConnection()
+                .getDatabase(details.database)
+        } catch (ignored: Exception)
+        {
+            setConnection(createNewConnection())
+
+            getConnection()
+                .getDatabase(details.database)
+        }
     }
 
-    public override fun createNewConnection(): MongoClient
+    override fun createNewConnection(): MongoClient
     {
         return MongoClient(details.uri)
     }

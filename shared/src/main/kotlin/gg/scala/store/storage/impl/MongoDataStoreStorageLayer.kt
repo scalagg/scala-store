@@ -4,7 +4,7 @@ import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.UpdateOptions
 import gg.scala.store.connection.mongo.AbstractDataStoreMongoConnection
-import gg.scala.store.container.AbstractDataStoreStorableContainer
+import gg.scala.store.container.DataStoreStorableContainer
 import gg.scala.store.storage.AbstractDataStoreStorageLayer
 import gg.scala.store.storage.storable.AbstractStorableObject
 import org.bson.Document
@@ -19,7 +19,7 @@ import kotlin.reflect.KClass
  */
 class MongoDataStoreStorageLayer<D : AbstractStorableObject>(
     connection: AbstractDataStoreMongoConnection,
-    private val container: AbstractDataStoreStorableContainer<D>,
+    private val container: DataStoreStorableContainer<D>,
     private val dataType: KClass<D>
 ) : AbstractDataStoreStorageLayer<AbstractDataStoreMongoConnection, D>(connection)
 {

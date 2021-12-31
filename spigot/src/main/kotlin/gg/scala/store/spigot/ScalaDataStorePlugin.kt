@@ -33,6 +33,8 @@ class ScalaDataStorePlugin : JavaPlugin(), Listener
             )
 
         DataStoreUserDataContainer.preLoadResources()
+
+        server.pluginManager.registerEvents(this, this)
     }
 
     @EventHandler

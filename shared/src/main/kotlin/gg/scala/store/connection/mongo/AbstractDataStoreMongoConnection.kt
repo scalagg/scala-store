@@ -44,14 +44,6 @@ abstract class AbstractDataStoreMongoConnection : AbstractDataStoreConnection<Mo
 
     override fun setConnection(connection: MongoClient)
     {
-        try
-        {
-            close()
-        } catch (exception: Exception)
-        {
-            LOGGER.logSevereException(exception)
-        }
-
         handle = connection
     }
 

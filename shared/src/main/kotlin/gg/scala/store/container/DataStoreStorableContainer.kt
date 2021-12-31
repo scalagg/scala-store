@@ -22,7 +22,9 @@ import kotlin.reflect.KClass
  * @author GrowlyX
  * @since 12/30/2021
  */
-abstract class AbstractDataStoreStorableContainer<D : AbstractStorableObject>
+open class DataStoreStorableContainer<D : AbstractStorableObject>(
+    private val dataType: KClass<D>
+)
 {
     private val localCache = ConcurrentHashMap<UUID, D>()
     private val localLayerCache = mutableMapOf<DataStoreStorageType, AbstractDataStoreStorageLayer<*, D>>()
@@ -40,13 +42,12 @@ abstract class AbstractDataStoreStorableContainer<D : AbstractStorableObject>
 
     fun preLoadResources()
     {
-        // TODO: 12/30/2021 handle layer creation automatically
         localLayerCache[DataStoreStorageType.MONGO] = MongoDataStoreStorageLayer(
-            ScalaDataStoreShared.INSTANCE.getMongoConnection(), this, getDataType()
+            ScalaDataStoreShared.INSTANCE.getMongoConnection(), this, dataType
         )
 
         localLayerCache[DataStoreStorageType.REDIS] = RedisDataStoreStorageLayer(
-            ScalaDataStoreShared.INSTANCE.getRedisConnection(), this, getDataType()
+            ScalaDataStoreShared.INSTANCE.getRedisConnection(), this, dataType
         )
     }
 
@@ -117,7 +118,4 @@ abstract class AbstractDataStoreStorableContainer<D : AbstractStorableObject>
         val layer = localLayerCache[type]!!
         return layer.load(identifier)
     }
-
-    abstract fun getDataType(): KClass<D>
-
 }

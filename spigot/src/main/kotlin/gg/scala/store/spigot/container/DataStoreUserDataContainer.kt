@@ -1,9 +1,9 @@
 package gg.scala.store.spigot.container
 
-import gg.scala.store.container.impl.SimpleDataStoreStorableContainer
+import gg.scala.store.container.DataStoreStorableContainer
 
 /**
  * @author GrowlyX
  * @since 12/30/2021
  */
-object DataStoreUserDataContainer : SimpleDataStoreStorableContainer<DataStoreUserData>(DataStoreUserData::class)
+object DataStoreUserDataContainer : DataStoreStorableContainer<DataStoreUserData>(DataStoreUserData::class)
