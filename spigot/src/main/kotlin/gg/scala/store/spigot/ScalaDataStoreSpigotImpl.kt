@@ -1,10 +1,11 @@
 package gg.scala.store.spigot
 
 import gg.scala.store.ScalaDataStoreShared
+import gg.scala.store.connection.mongo.AbstractDataStoreMongoConnection
 import gg.scala.store.connection.mongo.impl.UriDataStoreMongoConnection
-import gg.scala.store.connection.mongo.impl.details.DataStoreMongoConnectionDetails
+import gg.scala.store.connection.redis.AbstractDataStoreRedisConnection
+import gg.scala.store.connection.redis.impl.AuthDataStoreRedisConnection
 import gg.scala.store.connection.redis.impl.NoAuthDataStoreRedisConnection
-import gg.scala.store.connection.redis.impl.details.DataStoreRedisConnectionDetails
 import org.bukkit.Bukkit
 
 /**
@@ -13,18 +14,31 @@ import org.bukkit.Bukkit
  */
 object ScalaDataStoreSpigotImpl : ScalaDataStoreShared()
 {
-    override fun getNewRedisConnection() = NoAuthDataStoreRedisConnection(
-        DataStoreRedisConnectionDetails(
-            hostname = "127.0.0.1", port = 6379
-        )
-    )
+    override fun getNewRedisConnection(): AbstractDataStoreRedisConnection
+    {
+        val details = ScalaDataStorePlugin.INSTANCE.redis
 
-    override fun getNewMongoConnection() = UriDataStoreMongoConnection(
-        DataStoreMongoConnectionDetails.of("mongodb://127.0.0.1:27017/admin")
-    )
+        return if (details.password.isNullOrEmpty())
+        {
+            NoAuthDataStoreRedisConnection(details)
+        } else
+        {
+            AuthDataStoreRedisConnection(details)
+        }
+    }
+
+    override fun getNewMongoConnection(): AbstractDataStoreMongoConnection
+    {
+        return UriDataStoreMongoConnection(
+            ScalaDataStorePlugin.INSTANCE.mongo
+        )
+    }
 
     override fun debug(from: String, message: String)
     {
+        if (!ScalaDataStorePlugin.INSTANCE.settings.debug)
+            return
+
         Bukkit.getOnlinePlayers()
             .filter { it.isOp }
             .forEach {
