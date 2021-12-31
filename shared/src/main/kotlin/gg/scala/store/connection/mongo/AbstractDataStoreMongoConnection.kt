@@ -33,18 +33,11 @@ abstract class AbstractDataStoreMongoConnection : AbstractDataStoreConnection<Mo
 
     override fun <T> useResourceWithReturn(
         lambda: MongoDatabase.() -> T
-    ): T?
+    ): T
     {
-        return try
-        {
-            lambda.invoke(
-                getAppliedResource()
-            )
-        } catch (exception: MongoException)
-        {
-            LOGGER.logSevereException(exception)
-            null
-        }
+        return lambda.invoke(
+            getAppliedResource()
+        )
     }
 
     override fun getConnection() = handle

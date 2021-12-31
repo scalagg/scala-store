@@ -1,4 +1,4 @@
-package gg.scala.store.storage
+package gg.scala.store.storage.type
 
 import gg.scala.store.storage.storable.AbstractStorableObject
 
