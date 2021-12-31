@@ -49,6 +49,7 @@ constructor(
     init
     {
         INSTANCE = this
+        ScalaDataStoreShared.INSTANCE = ScalaDataStoreVelocityImpl
     }
 
     @Subscribe(order = PostOrder.FIRST)
@@ -78,7 +79,5 @@ constructor(
                     it.database, it.uri
                 )
             }
-
-        ScalaDataStoreShared.INSTANCE = ScalaDataStoreVelocityImpl
     }
 }

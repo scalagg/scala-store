@@ -1,7 +1,7 @@
 package gg.scala.store.connection
 
-import com.sun.istack.internal.logging.Logger
 import java.io.Closeable
+import java.util.logging.Logger
 
 /**
  * @author GrowlyX
@@ -13,7 +13,7 @@ abstract class AbstractDataStoreConnection<C, R> : Closeable
     {
         @JvmStatic
         val LOGGER: Logger = Logger.getLogger(
-            AbstractDataStoreConnection::class.java
+            AbstractDataStoreConnection::class.simpleName
         )
     }
 
