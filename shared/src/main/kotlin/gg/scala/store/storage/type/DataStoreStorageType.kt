@@ -1,10 +1,10 @@
 package gg.scala.store.storage.type
 
-import gg.scala.store.storage.storable.AbstractStorableObject
+import gg.scala.store.storage.storable.AbstractDataStoreObject
 
 /**
  * Represents the layer in which the
- * [AbstractStorableObject] will be pushed to.
+ * [AbstractDataStoreObject] will be pushed to.
  *
  * [ALL] - Pushes to both [MONGO] & [REDIS]
  *
@@ -12,7 +12,7 @@ import gg.scala.store.storage.storable.AbstractStorableObject
  * @since 12/30/2021
  */
 enum class DataStoreStorageType(
-    val actionable: Boolean = true
+    private val queryable: Boolean = true
 )
 {
     MONGO, REDIS,
@@ -21,7 +21,7 @@ enum class DataStoreStorageType(
 
     fun validate()
     {
-        if (!actionable)
-            throw RuntimeException("Cannot use a non-actionable type")
+        if (!queryable)
+            throw RuntimeException("Cannot use a non-queryable type")
     }
 }

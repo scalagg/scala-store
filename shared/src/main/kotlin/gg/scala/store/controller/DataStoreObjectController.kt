@@ -1,4 +1,4 @@
-package gg.scala.store.container
+package gg.scala.store.controller
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -8,7 +8,7 @@ import gg.scala.store.debug
 import gg.scala.store.storage.AbstractDataStoreStorageLayer
 import gg.scala.store.storage.impl.MongoDataStoreStorageLayer
 import gg.scala.store.storage.impl.RedisDataStoreStorageLayer
-import gg.scala.store.storage.storable.AbstractStorableObject
+import gg.scala.store.storage.storable.AbstractDataStoreObject
 import gg.scala.store.storage.type.DataStoreStorageType
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -16,18 +16,18 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 /**
- * A specific [AbstractStorableObject]'s
+ * A specific [AbstractDataStoreObject]'s
  * storage container.
  *
  * @author GrowlyX
  * @since 12/30/2021
  */
-open class DataStoreStorableContainer<D : AbstractStorableObject>(
+open class DataStoreObjectController<D : AbstractDataStoreObject>(
     private val dataType: KClass<D>
 )
 {
     private val localCache = ConcurrentHashMap<UUID, D>()
-    private val localLayerCache = mutableMapOf<DataStoreStorageType, AbstractDataStoreStorageLayer<*, D>>()
+    internal val localLayerCache = mutableMapOf<DataStoreStorageType, AbstractDataStoreStorageLayer<*, D>>()
 
     var serializer: Gson = GsonBuilder()
         .setLongSerializationPolicy(LongSerializationPolicy.STRING)

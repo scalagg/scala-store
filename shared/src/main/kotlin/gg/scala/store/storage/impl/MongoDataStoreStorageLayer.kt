@@ -4,9 +4,9 @@ import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.UpdateOptions
 import gg.scala.store.connection.mongo.AbstractDataStoreMongoConnection
-import gg.scala.store.container.DataStoreStorableContainer
+import gg.scala.store.controller.DataStoreObjectController
 import gg.scala.store.storage.AbstractDataStoreStorageLayer
-import gg.scala.store.storage.storable.AbstractStorableObject
+import gg.scala.store.storage.storable.AbstractDataStoreObject
 import org.bson.Document
 import java.util.*
 import kotlin.properties.Delegates
@@ -17,9 +17,9 @@ import kotlin.reflect.KClass
  * @author GrowlyX
  * @since 12/30/2021
  */
-class MongoDataStoreStorageLayer<D : AbstractStorableObject>(
+class MongoDataStoreStorageLayer<D : AbstractDataStoreObject>(
     connection: AbstractDataStoreMongoConnection,
-    private val container: DataStoreStorableContainer<D>,
+    private val container: DataStoreObjectController<D>,
     private val dataType: KClass<D>
 ) : AbstractDataStoreStorageLayer<AbstractDataStoreMongoConnection, D>(connection)
 {
@@ -36,7 +36,7 @@ class MongoDataStoreStorageLayer<D : AbstractStorableObject>(
     override fun saveSync(data: D)
     {
         collection.updateOne(
-            Filters.eq<Any>(
+            Filters.eq(
                 "_id", data.identifier.toString()
             ),
             Document(

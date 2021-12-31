@@ -5,8 +5,8 @@ import gg.scala.store.connection.redis.AbstractDataStoreRedisConnection
 import kotlin.properties.Delegates
 
 /**
- * Holds all non platform-specific
- * information.
+ * Contains code which is not
+ * specific to a platform.
  *
  * @author GrowlyX
  * @since 12/30/2021

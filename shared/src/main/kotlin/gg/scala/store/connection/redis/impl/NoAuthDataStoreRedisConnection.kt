@@ -19,7 +19,7 @@ class NoAuthDataStoreRedisConnection(
         return handle.resource
     }
 
-    public override fun createNewConnection(): JedisPool
+    override fun createNewConnection(): JedisPool
     {
         return JedisPool(details.hostname, details.port)
     }

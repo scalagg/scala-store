@@ -1,20 +1,14 @@
 package gg.scala.store.spigot
 
 import gg.scala.store.ScalaDataStoreShared
-import gg.scala.store.spigot.container.DataStoreUserData
-import gg.scala.store.spigot.container.DataStoreUserDataContainer
-import gg.scala.store.storage.type.DataStoreStorageType
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.player.PlayerQuitEvent
+import gg.scala.store.controller.DataStoreObjectControllerCache
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
  * @author GrowlyX
  * @since 12/30/2021
  */
-class ScalaDataStorePlugin : JavaPlugin(), Listener
+class ScalaDataStorePlugin : JavaPlugin()
 {
     override fun onEnable()
     {
@@ -31,29 +25,10 @@ class ScalaDataStorePlugin : JavaPlugin(), Listener
                 ScalaDataStoreSpigotImpl.getRedisConnection()
                     .createNewConnection()
             )
-
-        DataStoreUserDataContainer.preLoadResources()
-
-        server.pluginManager.registerEvents(this, this)
     }
 
-    @EventHandler
-    fun onJoin(event: PlayerJoinEvent)
+    override fun onDisable()
     {
-        DataStoreUserDataContainer.loadAndCache(event.player.uniqueId, {
-            DataStoreUserData(event.player.uniqueId, event.player.name)
-        }, DataStoreStorageType.MONGO)
-    }
-
-    @EventHandler
-    fun onQuit(event: PlayerQuitEvent)
-    {
-        ScalaDataStoreSpigotImpl.debug("PlayerQuitEvent", "Removing & saving ${event.player.uniqueId}")
-
-        DataStoreUserDataContainer.remove(event.player.uniqueId)?.let {
-            DataStoreUserDataContainer.save(it, DataStoreStorageType.ALL)
-        }
-
-        ScalaDataStoreSpigotImpl.debug("PlayerQuitEvent", "Removed & saved ${event.player.uniqueId}")
+        DataStoreObjectControllerCache.closeAll()
     }
 }
