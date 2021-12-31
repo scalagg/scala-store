@@ -1,7 +1,7 @@
 package gg.scala.store.storage
 
 import gg.scala.store.connection.AbstractDataStoreConnection
-import gg.scala.store.storage.storable.AbstractDataStoreObject
+import gg.scala.store.storage.storable.IDataStoreObject
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture
  * @author GrowlyX
  * @since 12/30/2021
  */
-abstract class AbstractDataStoreStorageLayer<C : AbstractDataStoreConnection<*, *>, D : AbstractDataStoreObject>(
+abstract class AbstractDataStoreStorageLayer<C : AbstractDataStoreConnection<*, *>, D : IDataStoreObject>(
     internal val connection: C
 )
 {

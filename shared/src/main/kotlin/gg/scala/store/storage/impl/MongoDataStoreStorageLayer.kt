@@ -6,7 +6,7 @@ import com.mongodb.client.model.UpdateOptions
 import gg.scala.store.connection.mongo.AbstractDataStoreMongoConnection
 import gg.scala.store.controller.DataStoreObjectController
 import gg.scala.store.storage.AbstractDataStoreStorageLayer
-import gg.scala.store.storage.storable.AbstractDataStoreObject
+import gg.scala.store.storage.storable.IDataStoreObject
 import org.bson.Document
 import java.util.*
 import kotlin.properties.Delegates
@@ -17,7 +17,7 @@ import kotlin.reflect.KClass
  * @author GrowlyX
  * @since 12/30/2021
  */
-class MongoDataStoreStorageLayer<D : AbstractDataStoreObject>(
+class MongoDataStoreStorageLayer<D : IDataStoreObject>(
     connection: AbstractDataStoreMongoConnection,
     private val container: DataStoreObjectController<D>,
     private val dataType: KClass<D>

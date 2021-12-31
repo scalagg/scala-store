@@ -4,7 +4,7 @@ import gg.scala.store.connection.mongo.AbstractDataStoreMongoConnection
 import gg.scala.store.connection.redis.AbstractDataStoreRedisConnection
 import gg.scala.store.controller.DataStoreObjectController
 import gg.scala.store.storage.AbstractDataStoreStorageLayer
-import gg.scala.store.storage.storable.AbstractDataStoreObject
+import gg.scala.store.storage.storable.IDataStoreObject
 import java.util.*
 import kotlin.properties.Delegates
 import kotlin.reflect.KClass
@@ -13,7 +13,7 @@ import kotlin.reflect.KClass
  * @author GrowlyX
  * @since 12/30/2021
  */
-class RedisDataStoreStorageLayer<D : AbstractDataStoreObject>(
+class RedisDataStoreStorageLayer<D : IDataStoreObject>(
     connection: AbstractDataStoreRedisConnection,
     private val container: DataStoreObjectController<D>,
     private val dataType: KClass<D>

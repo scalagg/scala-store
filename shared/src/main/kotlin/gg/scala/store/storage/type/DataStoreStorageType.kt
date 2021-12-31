@@ -1,10 +1,10 @@
 package gg.scala.store.storage.type
 
-import gg.scala.store.storage.storable.AbstractDataStoreObject
+import gg.scala.store.storage.storable.IDataStoreObject
 
 /**
  * Represents the layer in which the
- * [AbstractDataStoreObject] will be pushed to.
+ * [IDataStoreObject] will be pushed to.
  *
  * [ALL] - Pushes to both [MONGO] & [REDIS]
  *

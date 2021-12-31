@@ -8,7 +8,7 @@ import gg.scala.store.debug
 import gg.scala.store.storage.AbstractDataStoreStorageLayer
 import gg.scala.store.storage.impl.MongoDataStoreStorageLayer
 import gg.scala.store.storage.impl.RedisDataStoreStorageLayer
-import gg.scala.store.storage.storable.AbstractDataStoreObject
+import gg.scala.store.storage.storable.IDataStoreObject
 import gg.scala.store.storage.type.DataStoreStorageType
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -16,13 +16,13 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 /**
- * A specific [AbstractDataStoreObject]'s
+ * A specific [IDataStoreObject]'s
  * storage container.
  *
  * @author GrowlyX
  * @since 12/30/2021
  */
-open class DataStoreObjectController<D : AbstractDataStoreObject>(
+open class DataStoreObjectController<D : IDataStoreObject>(
     private val dataType: KClass<D>
 )
 {

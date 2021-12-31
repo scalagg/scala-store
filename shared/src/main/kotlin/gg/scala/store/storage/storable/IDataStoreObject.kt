@@ -6,13 +6,13 @@ import java.util.*
  * Represents a generic object storable
  * in any storage layer type.
  *
- * [AbstractDataStoreObject] instances are
+ * [IDataStoreObject] instances are
  * identified through its [identifier].
  *
  * @author GrowlyX
  * @since 12/30/2021
  */
-abstract class AbstractDataStoreObject
+interface IDataStoreObject
 {
-    abstract val identifier: UUID
+    val identifier: UUID
 }

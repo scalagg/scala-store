@@ -1,7 +1,7 @@
 package gg.scala.store.controller
 
 import com.google.gson.Gson
-import gg.scala.store.storage.storable.AbstractDataStoreObject
+import gg.scala.store.storage.storable.IDataStoreObject
 import kotlin.reflect.KClass
 
 /**
@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
  */
 object DataStoreObjectControllerCache
 {
-    val containers = mutableMapOf<KClass<out AbstractDataStoreObject>, DataStoreObjectController<*>>()
+    val containers = mutableMapOf<KClass<out IDataStoreObject>, DataStoreObjectController<*>>()
 
     fun closeAll()
     {
@@ -27,7 +27,7 @@ object DataStoreObjectControllerCache
     }
 
     @Suppress("UNCHECKED_CAST")
-    inline fun <reified T : AbstractDataStoreObject> find(): DataStoreObjectController<T>?
+    inline fun <reified T : IDataStoreObject> find(): DataStoreObjectController<T>?
     {
         val container = containers[T::class]
             ?: return null
@@ -35,7 +35,7 @@ object DataStoreObjectControllerCache
         return container as DataStoreObjectController<T>
     }
 
-    inline fun <reified T : AbstractDataStoreObject> create(
+    inline fun <reified T : IDataStoreObject> create(
         serializer: Gson? = null
     ): DataStoreObjectController<T>
     {
