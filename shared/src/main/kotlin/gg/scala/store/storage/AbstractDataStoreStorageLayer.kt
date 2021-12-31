@@ -35,7 +35,7 @@ abstract class AbstractDataStoreStorageLayer<C : AbstractDataStoreConnection<*, 
         return CompletableFuture.runAsync() { deleteSync(identifier) }
     }
 
-    fun loadAll(identifier: UUID): CompletableFuture<Map<UUID, D>>
+    fun loadAll(): CompletableFuture<Map<UUID, D>>
     {
         return CompletableFuture.supplyAsync { loadAllSync() }
     }

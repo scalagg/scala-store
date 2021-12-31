@@ -11,7 +11,11 @@ import gg.scala.store.storage.storable.AbstractStorableObject
  * @author GrowlyX
  * @since 12/30/2021
  */
-enum class DataStoreStorageType
+enum class DataStoreStorageType(
+    val actionable: Boolean = true
+)
 {
-    MONGO, REDIS, ALL
+    MONGO, REDIS,
+    CACHE(false),
+    ALL(false)
 }
