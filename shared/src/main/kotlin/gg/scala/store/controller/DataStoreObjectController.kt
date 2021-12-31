@@ -80,19 +80,21 @@ open class DataStoreObjectController<D : IDataStoreObject>(
         type: DataStoreStorageType
     ): CompletableFuture<D>
     {
+        val debugFrom = "${javaClass.simpleName}_${dataType.simpleName}"
+
         val start = System.currentTimeMillis()
-        "Loading $identifier...".debug(javaClass.simpleName)
+        "Loading $identifier...".debug(debugFrom)
 
         return load(identifier, type).thenApply {
             if (it == null)
-                "Couldn't find $identifier's data in ${type.name}".debug(javaClass.simpleName)
+                "Couldn't find $identifier's data in ${type.name}".debug(debugFrom)
             else
-                "Found $identifier's data in ${type.name}".debug(javaClass.simpleName)
+                "Found $identifier's data in ${type.name}".debug(debugFrom)
 
             val data = it ?: ifAbsent.invoke()
             localCache[identifier] = data
 
-            "Completed caching in ${System.currentTimeMillis() - start}ms".debug(javaClass.simpleName)
+            "Completed caching in ${System.currentTimeMillis() - start}ms".debug(debugFrom)
 
             return@thenApply data
         }
