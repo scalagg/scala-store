@@ -51,6 +51,18 @@ open class DataStoreObjectController<D : IDataStoreObject>(
         )
     }
 
+    inline fun <reified T : AbstractDataStoreStorageLayer<*, D>, R> useLayerWithReturn(
+        type: DataStoreStorageType, lambda: T.() -> R
+    )
+    {
+        type.validate()
+
+        val layer = localLayerCache[type]
+            ?: throw RuntimeException("No layer found with ${type.name} (is it queryable?)")
+
+        (layer as T).let(lambda)
+    }
+
     inline fun <reified T : AbstractDataStoreStorageLayer<*, D>> useLayer(
         type: DataStoreStorageType, lambda: T.() -> Unit
     )
