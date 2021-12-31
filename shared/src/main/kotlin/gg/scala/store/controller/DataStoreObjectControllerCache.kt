@@ -26,6 +26,8 @@ object DataStoreObjectControllerCache
         }
     }
 
+    inline fun <reified T : IDataStoreObject> findNotNull(): DataStoreObjectController<T> = find()!!
+
     @Suppress("UNCHECKED_CAST")
     inline fun <reified T : IDataStoreObject> find(): DataStoreObjectController<T>?
     {

@@ -118,4 +118,14 @@ open class DataStoreObjectController<D : IDataStoreObject>(
         val layer = localLayerCache[type]!!
         return layer.load(identifier)
     }
+
+    fun loadAll(
+        type: DataStoreStorageType
+    ): CompletableFuture<Map<UUID, D>>
+    {
+        type.validate()
+
+        val layer = localLayerCache[type]!!
+        return layer.loadAll()
+    }
 }
