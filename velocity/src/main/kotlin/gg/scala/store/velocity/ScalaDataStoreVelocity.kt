@@ -76,7 +76,7 @@ constructor(
         VelocitySettingsProcessor.locate<VelocityMongoConnectionDetails>()
             ?.let {
                 mongo = DataStoreMongoConnectionDetails(
-                    it.database, it.uri
+                    it.uri, it.database
                 )
             }
     }
