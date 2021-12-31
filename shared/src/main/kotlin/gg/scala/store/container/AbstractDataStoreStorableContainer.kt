@@ -7,12 +7,11 @@ import gg.scala.store.ScalaDataStoreShared
 import gg.scala.store.storage.AbstractDataStoreStorageLayer
 import gg.scala.store.storage.impl.MongoDataStoreStorageLayer
 import gg.scala.store.storage.impl.RedisDataStoreStorageLayer
-import gg.scala.store.storage.type.DataStoreStorageType
 import gg.scala.store.storage.storable.AbstractStorableObject
+import gg.scala.store.storage.type.DataStoreStorageType
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
-import javax.swing.ComponentInputMap
 import kotlin.reflect.KClass
 
 /**
@@ -48,14 +47,33 @@ abstract class AbstractDataStoreStorableContainer<D : AbstractStorableObject>
         )
     }
 
-    inline fun <reified T> useLayer(
-        type: DataStoreStorageType, lambda: T.() -> Unit
+    fun useLayer(
+        type: DataStoreStorageType,
+        lambda: AbstractDataStoreStorageLayer<*, D>.() -> Unit
     )
     {
-        if (type == DataStoreStorageType.ALL)
-            throw RuntimeException("Cannot use DataStoreStorageType#ALL")
+        type.validate()
 
+        localLayerCache[type]?.let(lambda)
+    }
 
+    fun loadAndCache(
+        identifier: UUID,
+        ifAbsent: () -> D,
+        type: DataStoreStorageType
+    ): CompletableFuture<D>
+    {
+        return load(identifier, type).thenApply {
+            val data = it ?: ifAbsent.invoke()
+            localCache[identifier] = data
+
+            return@thenApply data
+        }
+    }
+
+    fun remove(identifier: UUID): D?
+    {
+        return localCache.remove(identifier)
     }
 
     fun save(
@@ -81,8 +99,7 @@ abstract class AbstractDataStoreStorableContainer<D : AbstractStorableObject>
         type: DataStoreStorageType
     ): CompletableFuture<D?>
     {
-        if (type == DataStoreStorageType.ALL)
-            throw RuntimeException("Cannot load from DataStoreStorageType#ALL")
+        type.validate()
 
         val layer = localLayerCache[type]!!
         return layer.load(identifier)

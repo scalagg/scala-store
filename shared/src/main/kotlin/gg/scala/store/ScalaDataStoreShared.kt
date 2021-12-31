@@ -21,4 +21,6 @@ abstract class ScalaDataStoreShared
 
     abstract fun getRedisConnection(): AbstractDataStoreRedisConnection
     abstract fun getMongoConnection(): AbstractDataStoreMongoConnection
+
+    abstract fun debug(from: String, message: String)
 }

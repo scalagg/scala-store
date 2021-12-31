@@ -1,0 +1,4 @@
+dependencies {
+    compileOnly "gg.scala:sspigot-server:1.0-SNAPSHOT"
+    implementation project(":shared")
+}

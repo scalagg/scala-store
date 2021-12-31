@@ -17,5 +17,11 @@ enum class DataStoreStorageType(
 {
     MONGO, REDIS,
     CACHE(false),
-    ALL(false)
+    ALL(false);
+
+    fun validate()
+    {
+        if (!actionable)
+            throw RuntimeException("Cannot use a non-actionable type")
+    }
 }
