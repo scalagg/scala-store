@@ -1,5 +1,4 @@
 plugins {
-    id "maven-publish"
     id "com.github.johnrengelman.shadow" version "6.1.0"
     id "org.jetbrains.kotlin.jvm" version "1.6.0"
 }
@@ -17,7 +16,6 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: "maven-publish"
     apply plugin: "com.github.johnrengelman.shadow"
     apply plugin: "org.jetbrains.kotlin.jvm"
 
@@ -44,13 +42,5 @@ subprojects {
         archiveFileName = "store-${project.name}.jar"
     }
 
-    publishing {
-        publications {
-            shadow(MavenPublication) { publication ->
-                project.shadow.component(publication)
-            }
-        }
-    }
-
-    tasks.build.dependsOn(shadowJar, publishing)
+    tasks.build.dependsOn(shadowJar)
 }
