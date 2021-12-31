@@ -19,8 +19,8 @@ abstract class ScalaDataStoreShared
         var INSTANCE by Delegates.notNull<ScalaDataStoreShared>()
     }
 
-    abstract fun getRedisConnection(): AbstractDataStoreRedisConnection
-    abstract fun getMongoConnection(): AbstractDataStoreMongoConnection
+    abstract fun getNewRedisConnection(): AbstractDataStoreRedisConnection
+    abstract fun getNewMongoConnection(): AbstractDataStoreMongoConnection
 
     abstract fun debug(from: String, message: String)
 }

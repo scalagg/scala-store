@@ -13,20 +13,22 @@ import org.bukkit.Bukkit
  */
 object ScalaDataStoreSpigotImpl : ScalaDataStoreShared()
 {
-    override fun getRedisConnection() = NoAuthDataStoreRedisConnection(
+    override fun getNewRedisConnection() = NoAuthDataStoreRedisConnection(
         DataStoreRedisConnectionDetails(
             hostname = "127.0.0.1", port = 6379
         )
     )
 
-    override fun getMongoConnection() = UriDataStoreMongoConnection(
+    override fun getNewMongoConnection() = UriDataStoreMongoConnection(
         DataStoreMongoConnectionDetails.of("mongodb://127.0.0.1:27017/admin")
     )
 
     override fun debug(from: String, message: String)
     {
-        Bukkit.getOnlinePlayers().forEach {
-            it.sendMessage("[$from] [Debug] $message")
-        }
+        Bukkit.getOnlinePlayers()
+            .filter { it.isOp }
+            .forEach {
+                it.sendMessage("[$from] [Debug] $message")
+            }
     }
 }

@@ -43,11 +43,11 @@ open class DataStoreObjectController<D : AbstractDataStoreObject>(
     fun preLoadResources()
     {
         localLayerCache[DataStoreStorageType.MONGO] = MongoDataStoreStorageLayer(
-            ScalaDataStoreShared.INSTANCE.getMongoConnection(), this, dataType
+            ScalaDataStoreShared.INSTANCE.getNewMongoConnection(), this, dataType
         )
 
         localLayerCache[DataStoreStorageType.REDIS] = RedisDataStoreStorageLayer(
-            ScalaDataStoreShared.INSTANCE.getRedisConnection(), this, dataType
+            ScalaDataStoreShared.INSTANCE.getNewRedisConnection(), this, dataType
         )
     }
 

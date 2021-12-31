@@ -14,15 +14,15 @@ class ScalaDataStorePlugin : JavaPlugin()
     {
         ScalaDataStoreShared.INSTANCE = ScalaDataStoreSpigotImpl
 
-        ScalaDataStoreSpigotImpl.getMongoConnection()
+        ScalaDataStoreSpigotImpl.getNewMongoConnection()
             .setConnection(
-                ScalaDataStoreSpigotImpl.getMongoConnection()
+                ScalaDataStoreSpigotImpl.getNewMongoConnection()
                     .createNewConnection()
             )
 
-        ScalaDataStoreSpigotImpl.getRedisConnection()
+        ScalaDataStoreSpigotImpl.getNewRedisConnection()
             .setConnection(
-                ScalaDataStoreSpigotImpl.getRedisConnection()
+                ScalaDataStoreSpigotImpl.getNewRedisConnection()
                     .createNewConnection()
             )
     }
