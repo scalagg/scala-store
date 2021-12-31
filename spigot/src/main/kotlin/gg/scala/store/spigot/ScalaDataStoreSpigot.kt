@@ -12,12 +12,12 @@ import kotlin.properties.Delegates
  * @author GrowlyX
  * @since 12/30/2021
  */
-class ScalaDataStorePlugin : JavaPlugin()
+class ScalaDataStoreSpigot : JavaPlugin()
 {
     companion object
     {
         @JvmStatic
-        var INSTANCE by Delegates.notNull<ScalaDataStorePlugin>()
+        var INSTANCE by Delegates.notNull<ScalaDataStoreSpigot>()
     }
 
     var mongo by Delegates.notNull<DataStoreMongoConnectionDetails>()

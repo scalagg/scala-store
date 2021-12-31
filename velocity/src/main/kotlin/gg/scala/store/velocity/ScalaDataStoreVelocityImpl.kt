@@ -1,4 +1,4 @@
-package gg.scala.store.spigot
+package gg.scala.store.velocity
 
 import gg.scala.store.ScalaDataStoreShared
 import gg.scala.store.connection.mongo.AbstractDataStoreMongoConnection
@@ -6,17 +6,17 @@ import gg.scala.store.connection.mongo.impl.UriDataStoreMongoConnection
 import gg.scala.store.connection.redis.AbstractDataStoreRedisConnection
 import gg.scala.store.connection.redis.impl.AuthDataStoreRedisConnection
 import gg.scala.store.connection.redis.impl.NoAuthDataStoreRedisConnection
-import org.bukkit.Bukkit
+import gg.scala.store.velocity.settings.VelocitySettingsProcessor
 
 /**
  * @author GrowlyX
  * @since 12/30/2021
  */
-object ScalaDataStoreSpigotImpl : ScalaDataStoreShared()
+object ScalaDataStoreVelocityImpl : ScalaDataStoreShared()
 {
     override fun getNewRedisConnection(): AbstractDataStoreRedisConnection
     {
-        val details = ScalaDataStoreSpigot.INSTANCE.redis
+        val details = ScalaDataStoreVelocity.INSTANCE.redis
 
         return if (details.password.isNullOrEmpty())
         {
@@ -30,19 +30,19 @@ object ScalaDataStoreSpigotImpl : ScalaDataStoreShared()
     override fun getNewMongoConnection(): AbstractDataStoreMongoConnection
     {
         return UriDataStoreMongoConnection(
-            ScalaDataStoreSpigot.INSTANCE.mongo
+            ScalaDataStoreVelocity.INSTANCE.mongo
         )
     }
 
     override fun debug(from: String, message: String)
     {
-        if (!ScalaDataStoreSpigot.INSTANCE.settings.debug)
-            return
+        val settings = VelocitySettingsProcessor
+            .locate<ScalaDataStoreVelocitySettings>()!!
 
-        Bukkit.getOnlinePlayers()
-            .filter { it.isOp }
-            .forEach {
-                it.sendMessage("[$from] [Debug] $message")
-            }
+        if (settings.debug)
+        {
+            ScalaDataStoreVelocity.INSTANCE
+                .logger.info("[$from] [Debug] $message")
+        }
     }
 }
