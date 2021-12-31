@@ -53,14 +53,14 @@ open class DataStoreObjectController<D : IDataStoreObject>(
 
     inline fun <reified T : AbstractDataStoreStorageLayer<*, D>, R> useLayerWithReturn(
         type: DataStoreStorageType, lambda: T.() -> R
-    )
+    ): R
     {
         type.validate()
 
         val layer = localLayerCache[type]
             ?: throw RuntimeException("No layer found with ${type.name} (is it queryable?)")
 
-        (layer as T).let(lambda)
+        return (layer as T).let(lambda)
     }
 
     inline fun <reified T : AbstractDataStoreStorageLayer<*, D>> useLayer(
@@ -106,15 +106,19 @@ open class DataStoreObjectController<D : IDataStoreObject>(
     fun save(
         data: D,
         type: DataStoreStorageType = DataStoreStorageType.ALL
-    )
+    ): CompletableFuture<Void>
     {
         val layer = localLayerCache[type]
 
-        if (layer == null)
+        return if (layer == null)
         {
+            var status = CompletableFuture<Void>()
+
             localLayerCache.values.forEach {
-                it.save(data)
+                status = it.save(data)
             }
+
+            status
         } else
         {
             layer.save(data)

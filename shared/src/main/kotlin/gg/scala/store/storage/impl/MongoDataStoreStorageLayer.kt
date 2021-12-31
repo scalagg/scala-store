@@ -60,6 +60,25 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
         return entries
     }
 
+    fun loadWithFilterSync(filter: Bson): D?
+    {
+        val document = collection.find(filter)
+            .first() ?: return null
+
+        return container.serializer.fromJson(
+            document.toJson(), dataType.java
+        )
+    }
+
+    fun loadWithFilter(
+        filter: Bson
+    ): CompletableFuture<D?>
+    {
+        return CompletableFuture.supplyAsync {
+            loadWithFilterSync(filter)
+        }
+    }
+
     override fun saveSync(data: D)
     {
         collection.updateOne(
