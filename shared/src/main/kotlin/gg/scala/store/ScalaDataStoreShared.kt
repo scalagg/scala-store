@@ -24,3 +24,8 @@ abstract class ScalaDataStoreShared
 
     abstract fun debug(from: String, message: String)
 }
+
+fun String.debug(from: String)
+{
+    ScalaDataStoreShared.INSTANCE.debug(from, this)
+}

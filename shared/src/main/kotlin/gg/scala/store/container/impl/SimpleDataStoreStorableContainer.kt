@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
  * @author GrowlyX
  * @since 12/30/2021
  */
-class SimpleDataStoreStorableContainer<D : AbstractStorableObject>(
+open class SimpleDataStoreStorableContainer<D : AbstractStorableObject>(
     private val dataType: KClass<D>
 ) : AbstractDataStoreStorableContainer<D>()
 {

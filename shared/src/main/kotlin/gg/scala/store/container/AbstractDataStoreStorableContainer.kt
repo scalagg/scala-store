@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.LongSerializationPolicy
 import gg.scala.store.ScalaDataStoreShared
+import gg.scala.store.debug
 import gg.scala.store.storage.AbstractDataStoreStorageLayer
 import gg.scala.store.storage.impl.MongoDataStoreStorageLayer
 import gg.scala.store.storage.impl.RedisDataStoreStorageLayer
@@ -29,6 +30,8 @@ abstract class AbstractDataStoreStorableContainer<D : AbstractStorableObject>
     var serializer: Gson = GsonBuilder()
         .setLongSerializationPolicy(LongSerializationPolicy.STRING)
         .serializeNulls().setLenient().create()
+
+    operator fun get(uniqueId: UUID) = localCache[uniqueId]
 
     fun provideCustomSerializer(gson: Gson)
     {
@@ -63,9 +66,19 @@ abstract class AbstractDataStoreStorableContainer<D : AbstractStorableObject>
         type: DataStoreStorageType
     ): CompletableFuture<D>
     {
+        val start = System.currentTimeMillis()
+        "Loading $identifier...".debug(javaClass.simpleName)
+
         return load(identifier, type).thenApply {
+            if (it == null)
+                "Couldn't find $identifier's data in ${type.name}".debug(javaClass.simpleName)
+            else
+                "Found $identifier's data in ${type.name}".debug(javaClass.simpleName)
+
             val data = it ?: ifAbsent.invoke()
             localCache[identifier] = data
+
+            "Completed caching in ${System.currentTimeMillis() - start}ms".debug(javaClass.simpleName)
 
             return@thenApply data
         }
