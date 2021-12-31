@@ -8,7 +8,9 @@ import gg.scala.store.controller.DataStoreObjectController
 import gg.scala.store.storage.AbstractDataStoreStorageLayer
 import gg.scala.store.storage.storable.IDataStoreObject
 import org.bson.Document
+import org.bson.conversions.Bson
 import java.util.*
+import java.util.concurrent.CompletableFuture
 import kotlin.properties.Delegates
 import kotlin.reflect.KClass
 
@@ -31,6 +33,31 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
         collection = connection.useResourceWithReturn {
             this.getCollection(dataType.simpleName!!)
         }
+    }
+
+    fun loadAllWithFilter(
+        filter: Bson
+    ): CompletableFuture<Map<UUID, D>>
+    {
+        return CompletableFuture.supplyAsync {
+            loadAllWithFilterSync(filter)
+        }
+    }
+
+    fun loadAllWithFilterSync(
+        filter: Bson
+    ): Map<UUID, D>
+    {
+        val entries = mutableMapOf<UUID, D>()
+
+        // TODO: 12/30/2021 possibly improve this?
+        for (document in collection.find(filter))
+        {
+            entries[UUID.fromString(document.getString("_id"))!!] =
+                container.serializer.fromJson(document.toJson(), dataType.java)
+        }
+
+        return entries
     }
 
     override fun saveSync(data: D)
