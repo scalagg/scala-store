@@ -26,7 +26,7 @@ open class DataStoreObjectController<D : IDataStoreObject>(
     private val dataType: KClass<D>
 )
 {
-    private val localCache = ConcurrentHashMap<UUID, D>()
+    val localCache = ConcurrentHashMap<UUID, D>()
     val localLayerCache = mutableMapOf<DataStoreStorageType, AbstractDataStoreStorageLayer<*, D>>()
 
     var serializer: Gson = GsonBuilder()

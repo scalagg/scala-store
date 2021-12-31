@@ -1,0 +1,17 @@
+repositories {
+    maven {
+        url "https://nexus.velocitypowered.com/repository/maven-public/"
+    }
+}
+
+dependencies {
+    compileOnly 'com.velocitypowered:velocity-api:3.0.1'
+    implementation project(":shared")
+
+    implementation "com.github.mkotb:ConfigAPI:e1c8df3f13"
+    implementation "redis.clients:jedis:4.0.1"
+    implementation "org.mongodb:mongo-java-driver:3.12.10"
+    implementation "com.google.code.gson:gson:2.8.9"
+
+    implementation 'com.google.inject:guice:5.0.1'
+}
