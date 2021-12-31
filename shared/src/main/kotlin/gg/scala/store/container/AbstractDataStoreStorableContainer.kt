@@ -29,7 +29,7 @@ abstract class AbstractDataStoreStorableContainer<D : AbstractStorableObject>
 
     var serializer: Gson = GsonBuilder()
         .setLongSerializationPolicy(LongSerializationPolicy.STRING)
-        .serializeNulls().setLenient().create()
+        .serializeNulls().create()
 
     operator fun get(uniqueId: UUID) = localCache[uniqueId]
 

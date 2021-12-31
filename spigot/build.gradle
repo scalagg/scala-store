@@ -1,4 +1,8 @@
 dependencies {
     compileOnly "gg.scala:sspigot-server:1.0-SNAPSHOT"
+
     implementation project(":shared")
+    implementation "redis.clients:jedis:4.0.1"
+    implementation "org.mongodb:mongo-java-driver:3.12.10"
+    implementation "com.google.code.gson:gson:2.8.9"
 }

@@ -18,7 +18,7 @@ class UriDataStoreMongoConnection(
         return handle.getDatabase(details.database)
     }
 
-    override fun createNewConnection(): MongoClient
+    public override fun createNewConnection(): MongoClient
     {
         return MongoClient(details.uri)
     }

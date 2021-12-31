@@ -19,6 +19,19 @@ class ScalaDataStorePlugin : JavaPlugin(), Listener
     override fun onEnable()
     {
         ScalaDataStoreShared.INSTANCE = ScalaDataStoreSpigotImpl
+
+        ScalaDataStoreSpigotImpl.getMongoConnection()
+            .setConnection(
+                ScalaDataStoreSpigotImpl.getMongoConnection()
+                    .createNewConnection()
+            )
+
+        ScalaDataStoreSpigotImpl.getRedisConnection()
+            .setConnection(
+                ScalaDataStoreSpigotImpl.getRedisConnection()
+                    .createNewConnection()
+            )
+
         DataStoreUserDataContainer.preLoadResources()
     }
 
