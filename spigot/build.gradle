@@ -1,9 +1,9 @@
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib"
     compileOnly "gg.scala:sspigot-server:1.0-SNAPSHOT"
     implementation project(":shared")
 
-    implementation "com.github.mkotb:ConfigAPI:e1c8df3f13"
+    compileOnly "com.github.mkotb:ConfigAPI:e1c8df3f13"
     implementation "redis.clients:jedis:4.0.1"
     implementation "org.mongodb:mongo-java-driver:3.12.10"
     implementation "com.google.code.gson:gson:2.8.9"
