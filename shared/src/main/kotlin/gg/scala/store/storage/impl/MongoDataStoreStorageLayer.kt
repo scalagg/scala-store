@@ -23,7 +23,7 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
     connection: AbstractDataStoreMongoConnection,
     private val container: DataStoreObjectController<D>,
     private val dataType: KClass<D>
-) : AbstractDataStoreStorageLayer<AbstractDataStoreMongoConnection, D>(connection)
+) : AbstractDataStoreStorageLayer<AbstractDataStoreMongoConnection, D, Bson>(connection)
 {
     private var collection by Delegates.notNull<MongoCollection<Document>>()
     private val upsetOptions = UpdateOptions().upsert(true)
@@ -35,16 +35,7 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
         }
     }
 
-    fun loadAllWithFilter(
-        filter: Bson
-    ): CompletableFuture<Map<UUID, D>>
-    {
-        return CompletableFuture.supplyAsync {
-            loadAllWithFilterSync(filter)
-        }
-    }
-
-    fun loadAllWithFilterSync(
+    override fun loadAllWithFilterSync(
         filter: Bson
     ): Map<UUID, D>
     {
@@ -60,7 +51,7 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
         return entries
     }
 
-    fun loadWithFilterSync(filter: Bson): D?
+    override fun loadWithFilterSync(filter: Bson): D?
     {
         val document = collection.find(filter)
             .first() ?: return null
@@ -68,15 +59,6 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
         return container.serializer.fromJson(
             document.toJson(), dataType.java
         )
-    }
-
-    fun loadWithFilter(
-        filter: Bson
-    ): CompletableFuture<D?>
-    {
-        return CompletableFuture.supplyAsync {
-            loadWithFilterSync(filter)
-        }
     }
 
     override fun saveSync(data: D)

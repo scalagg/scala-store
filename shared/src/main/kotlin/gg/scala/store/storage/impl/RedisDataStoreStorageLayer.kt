@@ -5,7 +5,9 @@ import gg.scala.store.connection.redis.AbstractDataStoreRedisConnection
 import gg.scala.store.controller.DataStoreObjectController
 import gg.scala.store.storage.AbstractDataStoreStorageLayer
 import gg.scala.store.storage.storable.IDataStoreObject
+import org.bson.conversions.Bson
 import java.util.*
+import java.util.concurrent.CompletableFuture
 import kotlin.properties.Delegates
 import kotlin.reflect.KClass
 
@@ -17,7 +19,7 @@ class RedisDataStoreStorageLayer<D : IDataStoreObject>(
     connection: AbstractDataStoreRedisConnection,
     private val container: DataStoreObjectController<D>,
     private val dataType: KClass<D>
-) : AbstractDataStoreStorageLayer<AbstractDataStoreRedisConnection, D>(connection)
+) : AbstractDataStoreStorageLayer<AbstractDataStoreRedisConnection, D, (D) -> Boolean>(connection)
 {
     private var section by Delegates.notNull<String>()
 
@@ -33,6 +35,22 @@ class RedisDataStoreStorageLayer<D : IDataStoreObject>(
     init
     {
         section = "DataStore:${dataType.simpleName}"
+    }
+
+    override fun loadAllWithFilterSync(
+        filter: (D) -> Boolean
+    ): Map<UUID, D>
+    {
+        return loadAllSync().filter {
+            filter.invoke(it.value)
+        }
+    }
+
+    override fun loadWithFilterSync(filter: (D) -> Boolean): D?
+    {
+        return loadAllSync().filter {
+            filter.invoke(it.value)
+        }.values.firstOrNull()
     }
 
     override fun saveSync(data: D)

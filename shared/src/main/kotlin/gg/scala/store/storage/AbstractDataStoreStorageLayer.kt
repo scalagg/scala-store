@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture
  * @author GrowlyX
  * @since 12/30/2021
  */
-abstract class AbstractDataStoreStorageLayer<C : AbstractDataStoreConnection<*, *>, D : IDataStoreObject>(
+abstract class AbstractDataStoreStorageLayer<C : AbstractDataStoreConnection<*, *>, D : IDataStoreObject, F>(
     val connection: C
 )
 {
@@ -17,6 +17,9 @@ abstract class AbstractDataStoreStorageLayer<C : AbstractDataStoreConnection<*, 
 
     abstract fun loadSync(identifier: UUID): D?
     abstract fun loadAllSync(): Map<UUID, D>
+
+    abstract fun loadAllWithFilterSync(filter: F): Map<UUID, D>
+    abstract fun loadWithFilterSync(filter: F): D?
 
     abstract fun deleteSync(identifier: UUID)
 
@@ -38,6 +41,16 @@ abstract class AbstractDataStoreStorageLayer<C : AbstractDataStoreConnection<*, 
     fun loadAll(): CompletableFuture<Map<UUID, D>>
     {
         return CompletableFuture.supplyAsync { loadAllSync() }
+    }
+
+    fun loadAllWithFilter(filter: F): CompletableFuture<Map<UUID, D>>
+    {
+        return CompletableFuture.supplyAsync { loadAllWithFilterSync(filter) }
+    }
+
+    fun loadWithFilter(filter: F): CompletableFuture<D?>
+    {
+        return CompletableFuture.supplyAsync { loadWithFilterSync(filter) }
     }
 
     fun <T> runSafelyReturn(
