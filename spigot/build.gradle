@@ -1,4 +1,5 @@
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
     compileOnly "gg.scala:sspigot-server:1.0-SNAPSHOT"
     implementation project(":shared")
 

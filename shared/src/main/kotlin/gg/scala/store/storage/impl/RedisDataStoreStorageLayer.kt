@@ -37,47 +37,55 @@ class RedisDataStoreStorageLayer<D : IDataStoreObject>(
 
     override fun saveSync(data: D)
     {
-        connection.useResource {
-            hset(
-                section, data.identifier.toString(),
-                container.serializer.toJson(data)
-            )
+        runSafely {
+            connection.useResource {
+                hset(
+                    section, data.identifier.toString(),
+                    container.serializer.toJson(data)
+                )
+            }
         }
     }
 
     override fun loadSync(identifier: UUID): D?
     {
-        val serialized = connection.useResourceWithReturn {
-            hget(section, identifier.toString())
-        } ?: return null
+        return runSafelyReturn {
+            val serialized = connection.useResourceWithReturn {
+                hget(section, identifier.toString())
+            } ?: return@runSafelyReturn null
 
-        return container.serializer
-            .fromJson(serialized, dataType.java)
+            return@runSafelyReturn container.serializer
+                .fromJson(serialized, dataType.java)
+        }
     }
 
     override fun loadAllSync(): Map<UUID, D>
     {
-        val serialized = connection.useResourceWithReturn {
-            hgetAll(section)
-        } ?: return mutableMapOf()
+        return runSafelyReturn {
+            val serialized = connection.useResourceWithReturn {
+                hgetAll(section)
+            } ?: return@runSafelyReturn mutableMapOf()
 
-        val deserialized = mutableMapOf<UUID, D>()
+            val deserialized = mutableMapOf<UUID, D>()
 
-        for (mutableEntry in serialized)
-        {
-            deserialized[UUID.fromString(mutableEntry.key)] = container.serializer
-                .fromJson(mutableEntry.value, dataType.java)
+            for (mutableEntry in serialized)
+            {
+                deserialized[UUID.fromString(mutableEntry.key)] = container.serializer
+                    .fromJson(mutableEntry.value, dataType.java)
+            }
+
+            return@runSafelyReturn deserialized
         }
-
-        return deserialized
     }
 
     override fun deleteSync(identifier: UUID)
     {
-        connection.useResource {
-            hdel(
-                section, identifier.toString()
-            )
+        runSafely {
+            connection.useResource {
+                hdel(
+                    section, identifier.toString()
+                )
+            }
         }
     }
 

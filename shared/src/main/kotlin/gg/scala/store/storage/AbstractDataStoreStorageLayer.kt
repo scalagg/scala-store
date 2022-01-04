@@ -39,4 +39,36 @@ abstract class AbstractDataStoreStorageLayer<C : AbstractDataStoreConnection<*, 
     {
         return CompletableFuture.supplyAsync { loadAllSync() }
     }
+
+    fun <T> runSafelyReturn(
+        lambda: () -> T
+    ): T
+    {
+        try
+        {
+            kotlin.run {
+                return lambda.invoke()
+            }
+        } catch (exception: Exception)
+        {
+            exception.printStackTrace()
+            throw Exception("Uncaught exception in CompletableFuture chain")
+        }
+    }
+
+    fun runSafely(
+        lambda: () -> Unit
+    )
+    {
+        try
+        {
+            kotlin.run {
+                lambda.invoke()
+            }
+        } catch (exception: Exception)
+        {
+            exception.printStackTrace()
+        }
+    }
+
 }
