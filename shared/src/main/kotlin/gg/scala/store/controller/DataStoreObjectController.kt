@@ -27,7 +27,7 @@ open class DataStoreObjectController<D : IDataStoreObject>(
 )
 {
     val localCache = ConcurrentHashMap<UUID, D>()
-    val localLayerCache = mutableMapOf<DataStoreStorageType, AbstractDataStoreStorageLayer<*, D>>()
+    val localLayerCache = mutableMapOf<DataStoreStorageType, AbstractDataStoreStorageLayer<*, D, *>>()
 
     var serializer: Gson = GsonBuilder()
         .setLongSerializationPolicy(LongSerializationPolicy.STRING)
@@ -51,7 +51,7 @@ open class DataStoreObjectController<D : IDataStoreObject>(
         )
     }
 
-    inline fun <reified T : AbstractDataStoreStorageLayer<*, D>, R> useLayerWithReturn(
+    inline fun <reified T : AbstractDataStoreStorageLayer<*, D, *>, R> useLayerWithReturn(
         type: DataStoreStorageType, lambda: T.() -> R
     ): R
     {
@@ -63,7 +63,7 @@ open class DataStoreObjectController<D : IDataStoreObject>(
         return (layer as T).let(lambda)
     }
 
-    inline fun <reified T : AbstractDataStoreStorageLayer<*, D>> useLayer(
+    inline fun <reified T : AbstractDataStoreStorageLayer<*, D, *>> useLayer(
         type: DataStoreStorageType, lambda: T.() -> Unit
     )
     {
