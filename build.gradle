@@ -1,4 +1,5 @@
 plugins {
+    id "maven-publish"
     id "com.github.johnrengelman.shadow" version "6.1.0"
     id "org.jetbrains.kotlin.jvm" version "1.6.0"
 }
@@ -16,6 +17,7 @@ allprojects {
 }
 
 subprojects {
+    apply plugin: "maven-publish"
     apply plugin: "com.github.johnrengelman.shadow"
     apply plugin: "org.jetbrains.kotlin.jvm"
 
