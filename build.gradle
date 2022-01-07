@@ -12,7 +12,7 @@ allprojects {
         mavenCentral()
         mavenLocal()
 
-        maven { url "https://repo.lucko.me" }
+        maven { url "https://jitpack.io" }
     }
 }
 

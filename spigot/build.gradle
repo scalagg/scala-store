@@ -1,6 +1,15 @@
+repositories {
+    maven {
+        url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
+
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url 'https://oss.sonatype.org/content/repositories/central' }
+}
+
 dependencies {
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib"
-    compileOnly "gg.scala:sspigot-server:1.0-SNAPSHOT"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+    compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
     implementation project(":shared")
 
     implementation "com.github.mkotb:ConfigAPI:e1c8df3f13"
