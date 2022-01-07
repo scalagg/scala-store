@@ -22,7 +22,9 @@ object DataStoreObjectControllerCache
     fun close(container: DataStoreObjectController<*>)
     {
         container.localLayerCache.forEach {
-            it.value.connection.close()
+            it.value.runSafely {
+                it.value.connection.close()
+            }
         }
     }
 

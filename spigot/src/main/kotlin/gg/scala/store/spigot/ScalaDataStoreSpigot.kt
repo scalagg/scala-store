@@ -25,9 +25,7 @@ class ScalaDataStoreSpigot : JavaPlugin()
 
     var settings by Delegates.notNull<ScalaDataStoreSpigotSettings>()
 
-    private val configApi: ConfigFactory by lazy {
-        ConfigFactory.newFactory(this)
-    }
+    var configApi: ConfigFactory = ConfigFactory.newFactory(this)
 
     override fun onEnable()
     {
