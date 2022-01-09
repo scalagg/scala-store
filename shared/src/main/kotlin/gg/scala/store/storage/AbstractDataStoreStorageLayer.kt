@@ -69,7 +69,9 @@ abstract class AbstractDataStoreStorageLayer<C : AbstractDataStoreConnection<*, 
         }
     }
 
+    @JvmOverloads
     fun runSafely(
+        printTrace: Boolean = true,
         lambda: () -> Unit
     )
     {
@@ -80,7 +82,8 @@ abstract class AbstractDataStoreStorageLayer<C : AbstractDataStoreConnection<*, 
             }
         } catch (exception: Exception)
         {
-            exception.printStackTrace()
+            if (printTrace)
+                exception.printStackTrace()
         }
     }
 
