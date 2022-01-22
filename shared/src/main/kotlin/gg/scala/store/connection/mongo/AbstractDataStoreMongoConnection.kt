@@ -40,8 +40,6 @@ abstract class AbstractDataStoreMongoConnection : AbstractDataStoreConnection<Mo
         )
     }
 
-    override fun getConnection() = handle
-
     override fun setConnection(connection: MongoClient)
     {
         handle = connection
