@@ -31,7 +31,13 @@ class UriDataStoreMongoConnection(
 
     override fun getConnection(): MongoClient
     {
-        TODO("Not yet implemented")
+        return try
+        {
+            handle
+        } catch (e: Exception)
+        {
+            createNewConnection()
+        }
     }
 
     override fun createNewConnection(): MongoClient
