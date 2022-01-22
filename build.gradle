@@ -12,8 +12,8 @@ allprojects {
 
     repositories {
         mavenCentral()
-        mavenLocal()
 
+        maven { url "https://repo.stellardrift.ca" }
         maven { url "https://jitpack.io" }
     }
 }

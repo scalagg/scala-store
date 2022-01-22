@@ -1,4 +1,6 @@
 repositories {
+    mavenLocal()
+
     maven {
         url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
     }
