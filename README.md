@@ -31,12 +31,11 @@ To create a new `DataStoreObjectController`, you must access the DataStoreObject
 DataStoreObjectController.create<Object>()
 ```
 
-You an access the stored instance through
+You an access the stored instance through the following methods.
 ```kt
+DataStoreObjectController.find<Object>() // can be null
+DataStoreObjectController.findNotNull<Object>() // non null
 ```
-
-
-You can also supply a custom []
 
 ## Authors
 - [GrowlyX](https://github.com/growlyx)
