@@ -22,7 +22,7 @@ Store uses Google's [Gson](https://github.com/google/gson) for serialization by 
 - You may supply your own Gson instance by passing through the instance while creating a new controller, or using `DataStoreObjectController#provideCustomSerializer(Gson)`.
 
 Objects which are serialized/deserialized through Store must implement `IDataStoreObject`, which contains a overridable identififer field.
-- This isn't the best solution, but I prefer it over [rawr](https://github.com/devrawr)'s solution.
+- This isn't the best solution, but I personally prefer it over [rawr](https://github.com/devrawr)'s solution.
 - The identifier field must be a non-null UUID.
 
 To create a new `DataStoreObjectController`, you must access the DataStoreObjectControllerCache, which will store each controller for you.
@@ -35,6 +35,24 @@ You an access the stored instance through the following methods.
 ```kt
 DataStoreObjectController.find<Object>() // can be null
 DataStoreObjectController.findNotNull<Object>() // non null
+```
+
+Controllers have several methods to access, mutate, and delete data from any storage provider:
+```kt
+val controller = DataStoreObjectController.findNotNull<Object>()
+
+// basic save, remove, load
+controller.save(data, DataStoreStorageType.REDIS)
+controller.load(data, DataStoreStorageType.REDIS)
+controller.loadAll(data, DataStoreStorageType.REDIS)
+controller.delete(data, DataStoreStorageType.REDIS)
+
+// local caching
+controller.remove(id) // removes from the local cache
+controller.loadAndCache(id, { Object() /* if absent */ }, DataStoreStorageType.REDIS)
+
+// accessing internal layer
+controller.useLayer<RedisDataStoreStorageLayer<Object>> { /* your code */ }
 ```
 
 ## Authors
