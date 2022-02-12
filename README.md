@@ -1,5 +1,5 @@
 # Store
-Extensive storage-provider wrapper including native support for [jedis](https://github.com/redis/jedis) and [mongodb](https://github.com/mongodb/mongo-java-driver) written in Kotlin.
+Extensive storage-provider wrapper including native support for [jedis](https://github.com/redis/jedis) and [mongodb-java-driver](https://github.com/mongodb/mongo-java-driver) written in Kotlin.
  - Since this project was originally meant to be a closed-source project using Scala's propriatary code, I didn't put usage into consideration, and it's pretty hard to work with if you don't know how to the project is structured.
    * [rawr](https://github.com/devrawr) has created a project called [honey](https://github.com/devrawr/honey), that has implementations for more storage providers and is easier to use.
    * Store is currently open-source so [GrowlyX](https://github.com/growlyx) is able to link it to his portfolio.
@@ -9,9 +9,9 @@ Extensive storage-provider wrapper including native support for [jedis](https://
 
 ## Structure
 The parent project contains three modules, and uses gradle as its build management tool:
-- shared (✔️)
-- spigot (✔️)
-- velocity (✔️)
+- shared
+- spigot
+- velocity
 
 The shared platform contains most of the connection, controller, and platform code, while spigot & velocity contain implementations for configs and debugging tools.
 
@@ -57,4 +57,4 @@ controller.useLayer<RedisDataStoreStorageLayer<Object>> { /* your code */ }
 
 ## Authors
 - [GrowlyX](https://github.com/growlyx)
-- [TehNeon](https://github.com/tehneon) (original idea from his closed-source project: XeDataStore)
+- [TehNeon](https://github.com/tehneon) (original idea from his closed-source project: Xenon DataStore)
