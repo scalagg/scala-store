@@ -1,8 +1,5 @@
 package gg.scala.store.controller
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.LongSerializationPolicy
 import gg.scala.store.ScalaDataStoreShared
 import gg.scala.store.debug
 import gg.scala.store.serializer.DataStoreSerializer
@@ -53,14 +50,14 @@ open class DataStoreObjectController<D : IDataStoreObject>(
         )
     }
 
-    inline fun <reified T : AbstractDataStoreStorageLayer<*, D, *>, R> useLayerWithReturn(
-        type: DataStoreStorageType, lambda: T.() -> R
-    ): R
+    inline fun <reified T : AbstractDataStoreStorageLayer<*, D, *>, U> useLayerWithReturn(
+        type: DataStoreStorageType, lambda: T.() -> U
+    ): U
     {
         type.validate()
 
         val layer = localLayerCache[type]
-            ?: throw RuntimeException("No layer found with ${type.name} (is it queryable?)")
+            ?: throw RuntimeException("No layer found with ${type.name}")
 
         return (layer as T).let(lambda)
     }
@@ -159,5 +156,38 @@ open class DataStoreObjectController<D : IDataStoreObject>(
 
         val layer = localLayerCache[type]!!
         return layer.loadAll()
+    }
+
+    fun loadMultiple(
+        type: DataStoreStorageType,
+        vararg identifiers: UUID
+    ): CompletableFuture<Map<UUID, D?>>
+    {
+        type.validate()
+
+        val layer = localLayerCache[type]!!
+        return layer.loadMultiple(*identifiers)
+    }
+
+    fun saveMultiple(
+        type: DataStoreStorageType,
+        vararg objects: D
+    ): CompletableFuture<Void>
+    {
+        type.validate()
+
+        val layer = localLayerCache[type]!!
+        return layer.saveMultiple(*objects)
+    }
+
+    fun deleteMultiple(
+        type: DataStoreStorageType,
+        vararg identifiers: UUID
+    ): CompletableFuture<Void>
+    {
+        type.validate()
+
+        val layer = localLayerCache[type]!!
+        return layer.deleteMultiple(*identifiers)
     }
 }
