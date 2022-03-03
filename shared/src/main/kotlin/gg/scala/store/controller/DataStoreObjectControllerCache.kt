@@ -29,10 +29,12 @@ object DataStoreObjectControllerCache
         }
     }
 
-    inline fun <reified T : IDataStoreObject> findNotNull(): DataStoreObjectController<T> = find()!!
+    inline fun <reified T : IDataStoreObject> findNotNull():
+            DataStoreObjectController<T> = find()!!
 
     @Suppress("UNCHECKED_CAST")
-    inline fun <reified T : IDataStoreObject> find(): DataStoreObjectController<T>?
+    inline fun <reified T : IDataStoreObject> find():
+            DataStoreObjectController<T>?
     {
         val container = containers[T::class]
             ?: return null
@@ -40,12 +42,20 @@ object DataStoreObjectControllerCache
         return container as DataStoreObjectController<T>
     }
 
-    inline fun <reified T : IDataStoreObject> create(): DataStoreObjectController<T>
+    inline fun <reified T : IDataStoreObject> create():
+            DataStoreObjectController<T>
     {
-        val container = DataStoreObjectController(T::class)
+        return create(T::class)
+    }
+
+    fun <T : IDataStoreObject> create(
+        kClass: KClass<T>
+    ): DataStoreObjectController<T>
+    {
+        val container = DataStoreObjectController(kClass)
         container.preLoadResources()
 
-        containers[T::class] = container
+        containers[kClass] = container
 
         return container
     }
