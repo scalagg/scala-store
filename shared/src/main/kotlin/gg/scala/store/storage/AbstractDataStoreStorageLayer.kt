@@ -16,10 +16,10 @@ abstract class AbstractDataStoreStorageLayer<C : AbstractDataStoreConnection<*, 
     abstract fun saveSync(data: D)
 
     abstract fun loadSync(identifier: UUID): D?
-    abstract fun loadAllSync(): Map<UUID, D>
-
-    abstract fun loadAllWithFilterSync(filter: F): Map<UUID, D>
     abstract fun loadWithFilterSync(filter: F): D?
+
+    abstract fun loadAllSync(): Map<UUID, D>
+    abstract fun loadAllWithFilterSync(filter: F): Map<UUID, D>
 
     abstract fun deleteSync(identifier: UUID)
 
@@ -53,6 +53,56 @@ abstract class AbstractDataStoreStorageLayer<C : AbstractDataStoreConnection<*, 
         return CompletableFuture.supplyAsync { loadWithFilterSync(filter) }
     }
 
+    fun saveMultiple(vararg data: D): CompletableFuture<Void>
+    {
+        return CompletableFuture.runAsync { saveMultipleSync(*data) }
+    }
+
+    fun deleteMultiple(vararg identifiers: UUID): CompletableFuture<Void>
+    {
+        return CompletableFuture.runAsync { deleteMultipleSync(*identifiers) }
+    }
+
+    fun loadMultiple(vararg identifiers: UUID): CompletableFuture<Map<UUID, D?>>
+    {
+        return CompletableFuture.supplyAsync { loadMultipleSync(*identifiers) }
+    }
+
+    fun saveMultipleSync(vararg data: D)
+    {
+        for (instance in data)
+        {
+            runSafely { saveSync(instance) }
+        }
+    }
+
+    fun loadMultipleSync(
+        vararg identifiers: UUID
+    ): Map<UUID, D?>
+    {
+        val mutableMap = mutableMapOf<UUID, D?>()
+
+        for (identifier in identifiers)
+        {
+            mutableMap[identifier] =
+                runSafelyReturn {
+                    loadSync(identifier)
+                }
+        }
+
+        return mutableMap
+    }
+
+    fun deleteMultipleSync(
+        vararg identifiers: UUID
+    )
+    {
+        for (identifier in identifiers)
+        {
+            runSafely { deleteSync(identifier) }
+        }
+    }
+
     fun <T> runSafelyReturn(
         lambda: () -> T
     ): T
@@ -65,7 +115,7 @@ abstract class AbstractDataStoreStorageLayer<C : AbstractDataStoreConnection<*, 
         } catch (exception: Exception)
         {
             exception.printStackTrace()
-            throw Exception("Uncaught exception in CompletableFuture chain")
+            throw RuntimeException("Uncaught exception in CompletableFuture chain")
         }
     }
 
@@ -84,6 +134,8 @@ abstract class AbstractDataStoreStorageLayer<C : AbstractDataStoreConnection<*, 
         {
             if (printTrace)
                 exception.printStackTrace()
+
+            throw RuntimeException("Uncaught exception in CompletableFuture chain")
         }
     }
 

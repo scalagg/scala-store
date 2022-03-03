@@ -16,7 +16,6 @@ enum class DataStoreStorageType(
 )
 {
     MONGO, REDIS,
-    CACHE(false),
     ALL(false);
 
     fun validate()

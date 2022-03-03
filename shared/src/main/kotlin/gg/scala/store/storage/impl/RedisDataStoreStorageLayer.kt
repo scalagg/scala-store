@@ -34,7 +34,26 @@ class RedisDataStoreStorageLayer<D : IDataStoreObject>(
      */
     init
     {
-        section = "DataStore:${dataType.simpleName}"
+        withCustomSection {
+            append(dataType.simpleName)
+        }
+    }
+
+    /**
+     * Allow a user to build their own
+     * custom section with our Redis cache.
+     *
+     * All sections must start with `DataStore:`
+     */
+    fun withCustomSection(
+        section: StringBuilder.() -> Unit
+    )
+    {
+        val builder = StringBuilder()
+            .append("DataStore:")
+
+        this.section = section
+            .invoke(builder).toString()
     }
 
     override fun loadAllWithFilterSync(
@@ -59,7 +78,7 @@ class RedisDataStoreStorageLayer<D : IDataStoreObject>(
             connection.useResource {
                 hset(
                     section, data.identifier.toString(),
-                    container.serializer.toJson(data)
+                    container.serializer.serialize(data)
                 )
             }
         }
@@ -73,7 +92,7 @@ class RedisDataStoreStorageLayer<D : IDataStoreObject>(
             } ?: return@runSafelyReturn null
 
             return@runSafelyReturn container.serializer
-                .fromJson(serialized, dataType.java)
+                .deserialize(dataType, serialized)
         }
     }
 
@@ -89,7 +108,7 @@ class RedisDataStoreStorageLayer<D : IDataStoreObject>(
             for (mutableEntry in serialized)
             {
                 deserialized[UUID.fromString(mutableEntry.key)] = container.serializer
-                    .fromJson(mutableEntry.value, dataType.java)
+                    .deserialize(dataType, mutableEntry.value)
             }
 
             return@runSafelyReturn deserialized
@@ -100,9 +119,7 @@ class RedisDataStoreStorageLayer<D : IDataStoreObject>(
     {
         runSafely {
             connection.useResource {
-                hdel(
-                    section, identifier.toString()
-                )
+                hdel(section, identifier.toString())
             }
         }
     }

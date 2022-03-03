@@ -2,13 +2,14 @@ import java.util.stream.Collectors
 
 plugins {
     id "maven-publish"
+    id "org.jetbrains.kotlin.jvm" version "1.6.10"
+    id "org.jetbrains.kotlin.kapt" version "1.6.10"
     id "com.github.johnrengelman.shadow" version "7.1.2"
-    id "org.jetbrains.kotlin.jvm" version "1.6.0"
 }
 
 allprojects {
     group "gg.scala.store"
-    version "0.1.0"
+    version "0.1.2"
 
     repositories {
         mavenCentral()
@@ -22,13 +23,14 @@ subprojects {
     apply plugin: "maven-publish"
     apply plugin: "com.github.johnrengelman.shadow"
     apply plugin: "org.jetbrains.kotlin.jvm"
+    apply plugin: "org.jetbrains.kotlin.kapt"
 
     dependencies {
         implementation "org.jetbrains.kotlin:kotlin-stdlib"
 
-        compileOnly "redis.clients:jedis:4.0.1"
+        compileOnly "redis.clients:jedis:4.1.0"
         compileOnly "org.mongodb:mongo-java-driver:3.12.10"
-        compileOnly "com.google.code.gson:gson:2.8.9"
+        compileOnly "com.google.code.gson:gson:2.9.0"
     }
 
     compileKotlin {
@@ -54,5 +56,55 @@ subprojects {
         }
     }
 
-    tasks.build.dependsOn(shadowJar)
+    tasks.withType(GenerateMavenPom).all {
+        doLast {
+            final File file = new File(
+                    "$buildDir/publications/shadow/pom-default.xml"
+            )
+
+            final BufferedReader br = new BufferedReader(
+                    new FileReader(file)
+
+            )
+            final String lines = br.lines()
+                    .map((line) -> {
+                        if (line.contains("<dependencies/>")) "" else line
+                    })
+                    .collect(Collectors.joining("\n"))
+
+            final BufferedWriter wr = new BufferedWriter(
+                    new FileWriter(file, true)
+            )
+
+            final PrintWriter writer = new PrintWriter(file)
+            writer.print("")
+            writer.close()
+
+            wr.write(lines)
+            wr.close()
+        }
+    }
+
+    publishing {
+        publications {
+            shadow(MavenPublication) { publication ->
+                project.shadow.component(publication)
+            }
+        }
+
+        repositories {
+            maven {
+                name "Scala"
+                allowInsecureProtocol true
+                url "http://repository.scala.gg/repository/maven-releases/"
+
+                credentials {
+                    username property("scala.credentials.username") as String
+                    password property("scala.credentials.password") as String
+                }
+            }
+        }
+    }
+
+    tasks.build.dependsOn(shadowJar, publishShadowPublicationToScalaRepository)
 }

@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder
 import com.google.gson.LongSerializationPolicy
 import gg.scala.store.ScalaDataStoreShared
 import gg.scala.store.debug
+import gg.scala.store.serializer.DataStoreSerializer
+import gg.scala.store.serializer.serializers.GsonSerializer
 import gg.scala.store.storage.AbstractDataStoreStorageLayer
 import gg.scala.store.storage.impl.MongoDataStoreStorageLayer
 import gg.scala.store.storage.impl.RedisDataStoreStorageLayer
@@ -26,18 +28,18 @@ open class DataStoreObjectController<D : IDataStoreObject>(
     private val dataType: KClass<D>
 )
 {
-    val localCache = ConcurrentHashMap<UUID, D>()
-    val localLayerCache = mutableMapOf<DataStoreStorageType, AbstractDataStoreStorageLayer<*, D, *>>()
+    private val localCache = ConcurrentHashMap<UUID, D>()
 
-    var serializer: Gson = GsonBuilder()
-        .setLongSerializationPolicy(LongSerializationPolicy.STRING)
-        .serializeNulls().create()
+    val localLayerCache = mutableMapOf<DataStoreStorageType, AbstractDataStoreStorageLayer<*, D, *>>()
+    var serializer: DataStoreSerializer = GsonSerializer
 
     operator fun get(uniqueId: UUID) = localCache[uniqueId]
 
-    fun provideCustomSerializer(gson: Gson)
+    fun useSerializer(
+        serializer: DataStoreSerializer
+    )
     {
-        serializer = gson
+        this.serializer = serializer
     }
 
     fun preLoadResources()

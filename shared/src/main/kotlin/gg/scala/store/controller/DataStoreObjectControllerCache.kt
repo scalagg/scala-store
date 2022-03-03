@@ -1,6 +1,5 @@
 package gg.scala.store.controller
 
-import com.google.gson.Gson
 import gg.scala.store.storage.storable.IDataStoreObject
 import kotlin.reflect.KClass
 
@@ -19,7 +18,7 @@ object DataStoreObjectControllerCache
         }
     }
 
-    fun close(container: DataStoreObjectController<*>)
+    private fun close(container: DataStoreObjectController<*>)
     {
         container.localLayerCache.forEach {
             it.value.runSafely(
@@ -41,16 +40,10 @@ object DataStoreObjectControllerCache
         return container as DataStoreObjectController<T>
     }
 
-    inline fun <reified T : IDataStoreObject> create(
-        serializer: Gson? = null
-    ): DataStoreObjectController<T>
+    inline fun <reified T : IDataStoreObject> create(): DataStoreObjectController<T>
     {
         val container = DataStoreObjectController(T::class)
         container.preLoadResources()
-
-        serializer?.let {
-            container.provideCustomSerializer(it)
-        }
 
         containers[T::class] = container
 

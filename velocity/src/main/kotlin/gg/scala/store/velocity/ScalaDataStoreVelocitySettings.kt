@@ -1,7 +1,6 @@
 package gg.scala.store.velocity
 
 import gg.scala.store.velocity.settings.VelocitySettingsModel
-import java.lang.reflect.Type
 
 /**
  * @author GrowlyX

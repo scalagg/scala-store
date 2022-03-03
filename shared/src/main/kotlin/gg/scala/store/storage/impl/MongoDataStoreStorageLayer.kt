@@ -10,10 +10,8 @@ import gg.scala.store.storage.storable.IDataStoreObject
 import org.bson.Document
 import org.bson.conversions.Bson
 import java.util.*
-import java.util.concurrent.CompletableFuture
 import kotlin.properties.Delegates
 import kotlin.reflect.KClass
-
 
 /**
  * @author GrowlyX
@@ -30,9 +28,20 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
 
     init
     {
-        collection = connection.useResourceWithReturn {
-            this.getCollection(dataType.simpleName!!)
-        }
+        collection = connection
+            .useResourceWithReturn {
+                this.getCollection(dataType.simpleName!!)
+            }
+    }
+
+    fun withCustomCollection(
+        collection: String
+    )
+    {
+        this.collection = connection
+            .useResourceWithReturn {
+                this.getCollection(collection)
+            }
     }
 
     override fun loadAllWithFilterSync(
@@ -41,11 +50,10 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
     {
         val entries = mutableMapOf<UUID, D>()
 
-        // TODO: 12/30/2021 possibly improve this?
         for (document in collection.find(filter))
         {
             entries[UUID.fromString(document.getString("_id"))!!] =
-                container.serializer.fromJson(document.toJson(), dataType.java)
+                container.serializer.deserialize(dataType, document.toJson())
         }
 
         return entries
@@ -56,8 +64,8 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
         val document = collection.find(filter)
             .first() ?: return null
 
-        return container.serializer.fromJson(
-            document.toJson(), dataType.java
+        return container.serializer.deserialize(
+            dataType, document.toJson()
         )
     }
 
@@ -71,7 +79,7 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
                 "\$set",
                 Document.parse(
                     container.serializer
-                        .toJson(data)
+                        .serialize(data)
                 )
             ),
             upsetOptions
@@ -84,8 +92,8 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
             Filters.eq("_id", identifier.toString())
         ).first() ?: return null
 
-        return container.serializer.fromJson(
-            document.toJson(), dataType.java
+        return container.serializer.deserialize(
+            dataType, document.toJson(),
         )
     }
 
@@ -93,11 +101,10 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
     {
         val entries = mutableMapOf<UUID, D>()
 
-        // TODO: 12/30/2021 possibly improve this?
         for (document in collection.find())
         {
             entries[UUID.fromString(document.getString("_id"))!!] =
-                container.serializer.fromJson(document.toJson(), dataType.java)
+                container.serializer.deserialize(dataType, document.toJson())
         }
 
         return entries
