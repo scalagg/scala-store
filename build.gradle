@@ -87,7 +87,7 @@ subprojects {
 
     publishing {
         publications {
-            shadow(MavenPublication) { publication ->
+            shadowJar(MavenPublication) { publication ->
                 project.shadow.component(publication)
             }
         }
