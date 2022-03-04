@@ -5,13 +5,13 @@ import gg.scala.store.debug
 import gg.scala.store.serializer.DataStoreSerializer
 import gg.scala.store.serializer.serializers.GsonSerializer
 import gg.scala.store.storage.AbstractDataStoreStorageLayer
+import gg.scala.store.storage.impl.CachedDataStoreStorageLayer
 import gg.scala.store.storage.impl.MongoDataStoreStorageLayer
 import gg.scala.store.storage.impl.RedisDataStoreStorageLayer
 import gg.scala.store.storage.storable.IDataStoreObject
 import gg.scala.store.storage.type.DataStoreStorageType
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 /**
@@ -25,12 +25,8 @@ open class DataStoreObjectController<D : IDataStoreObject>(
     private val dataType: KClass<D>
 )
 {
-    private val localCache = ConcurrentHashMap<UUID, D>()
-
     val localLayerCache = mutableMapOf<DataStoreStorageType, AbstractDataStoreStorageLayer<*, D, *>>()
     var serializer: DataStoreSerializer = GsonSerializer
-
-    operator fun get(uniqueId: UUID) = localCache[uniqueId]
 
     fun useSerializer(
         serializer: DataStoreSerializer
@@ -91,17 +87,17 @@ open class DataStoreObjectController<D : IDataStoreObject>(
                 "Found $identifier's data in ${type.name}".debug(debugFrom)
 
             val data = it ?: ifAbsent.invoke()
-            localCache[identifier] = data
+
+            useLayer<CachedDataStoreStorageLayer<D>>(
+                DataStoreStorageType.CACHE
+            ) {
+                this.saveSync(data)
+            }
 
             "Completed caching in ${System.currentTimeMillis() - start}ms".debug(debugFrom)
 
             return@thenApply data
         }
-    }
-
-    fun remove(identifier: UUID): D?
-    {
-        return localCache.remove(identifier)
     }
 
     fun save(

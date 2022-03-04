@@ -15,7 +15,7 @@ enum class DataStoreStorageType(
     private val queryable: Boolean = true
 )
 {
-    MONGO, REDIS,
+    MONGO, REDIS, CACHE,
     ALL(false);
 
     fun validate()

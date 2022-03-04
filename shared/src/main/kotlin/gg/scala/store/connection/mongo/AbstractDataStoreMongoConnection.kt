@@ -1,11 +1,8 @@
 package gg.scala.store.connection.mongo
 
 import com.mongodb.MongoClient
-import com.mongodb.MongoException
 import com.mongodb.client.MongoDatabase
 import gg.scala.store.connection.AbstractDataStoreConnection
-import redis.clients.jedis.Jedis
-import redis.clients.jedis.JedisPool
 import redis.clients.jedis.exceptions.JedisException
 import kotlin.properties.Delegates
 
