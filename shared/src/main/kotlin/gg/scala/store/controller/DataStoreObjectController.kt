@@ -44,6 +44,8 @@ open class DataStoreObjectController<D : IDataStoreObject>(
         localLayerCache[DataStoreStorageType.REDIS] = RedisDataStoreStorageLayer(
             ScalaDataStoreShared.INSTANCE.getNewRedisConnection(), this, dataType
         )
+
+        localLayerCache[DataStoreStorageType.CACHE] = CachedDataStoreStorageLayer()
     }
 
     inline fun <reified T : AbstractDataStoreStorageLayer<*, D, *>, U> useLayerWithReturn(

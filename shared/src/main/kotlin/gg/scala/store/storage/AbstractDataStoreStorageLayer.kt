@@ -134,8 +134,6 @@ abstract class AbstractDataStoreStorageLayer<C : AbstractDataStoreConnection<*, 
         {
             if (printTrace)
                 exception.printStackTrace()
-
-            throw RuntimeException("Uncaught exception in CompletableFuture chain")
         }
     }
 
