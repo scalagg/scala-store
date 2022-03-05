@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap
  * @since 3/3/2022
  */
 class DataStoreCacheConnection<K, V>(
-    private var handle: ConcurrentHashMap<K, V> = ConcurrentHashMap()
+    val handle: ConcurrentHashMap<K, V> = ConcurrentHashMap<K, V>()
 ) : AbstractDataStoreConnection<ConcurrentHashMap<K, V>, ConcurrentHashMap<K, V>>()
 {
     override fun useResource(
@@ -32,7 +32,6 @@ class DataStoreCacheConnection<K, V>(
 
     override fun setConnection(connection: ConcurrentHashMap<K, V>)
     {
-        this.handle = connection
     }
 
     override fun createNewConnection(): ConcurrentHashMap<K, V>

@@ -1,14 +1,10 @@
 package gg.scala.store.storage.impl
 
-import gg.scala.store.connection.mongo.AbstractDataStoreMongoConnection
 import gg.scala.store.connection.redis.AbstractDataStoreRedisConnection
 import gg.scala.store.controller.DataStoreObjectController
 import gg.scala.store.storage.AbstractDataStoreStorageLayer
 import gg.scala.store.storage.storable.IDataStoreObject
-import org.bson.conversions.Bson
 import java.util.*
-import java.util.concurrent.CompletableFuture
-import kotlin.properties.Delegates
 import kotlin.reflect.KClass
 
 /**
@@ -21,23 +17,7 @@ class RedisDataStoreStorageLayer<D : IDataStoreObject>(
     private val dataType: KClass<D>
 ) : AbstractDataStoreStorageLayer<AbstractDataStoreRedisConnection, D, (D) -> Boolean>(connection)
 {
-    private var section by Delegates.notNull<String>()
-
-    /**
-     * Represents the "directory" in which all
-     * the objects will be stored in.
-     *
-     * Similar to how [AbstractDataStoreMongoConnection]
-     * handles its collections, we're using the [dataType]
-     * simpleName as the subdirectory to DataStore's
-     * parent directory.
-     */
-    init
-    {
-        withCustomSection {
-            append(dataType.simpleName)
-        }
-    }
+    private var section = "DataStore:${dataType.simpleName}"
 
     /**
      * Allow a user to build their own
@@ -51,9 +31,9 @@ class RedisDataStoreStorageLayer<D : IDataStoreObject>(
     {
         val builder = StringBuilder()
             .append("DataStore:")
+            .apply(section)
 
-        this.section = section
-            .invoke(builder).toString()
+        this.section = builder.toString()
     }
 
     override fun loadAllWithFilterSync(
@@ -107,8 +87,8 @@ class RedisDataStoreStorageLayer<D : IDataStoreObject>(
 
             for (mutableEntry in serialized)
             {
-                deserialized[UUID.fromString(mutableEntry.key)] = container.serializer
-                    .deserialize(dataType, mutableEntry.value)
+                deserialized[UUID.fromString(mutableEntry.key)] = container
+                    .serializer.deserialize(dataType, mutableEntry.value)
             }
 
             return@runSafelyReturn deserialized

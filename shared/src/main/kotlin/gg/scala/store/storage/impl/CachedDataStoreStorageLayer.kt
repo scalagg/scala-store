@@ -16,25 +16,18 @@ class CachedDataStoreStorageLayer<D : IDataStoreObject> :
 {
     override fun saveSync(data: D)
     {
-        connection.useResource {
-            this[data.identifier] = data
-        }
+        connection.getConnection()[data.identifier] = data
     }
 
     override fun loadSync(identifier: UUID): D?
     {
-        return connection
-            .useResourceWithReturn {
-                this[identifier]
-            }
+        return connection.getConnection()[identifier]
     }
 
     override fun loadWithFilterSync(filter: (D) -> Boolean): D?
     {
-        return connection
-            .useResourceWithReturn {
-                this.values.firstOrNull(filter)
-            }
+        return connection.getConnection()
+            .values.firstOrNull(filter)
     }
 
     override fun loadAllSync(): Map<UUID, D>
@@ -60,8 +53,6 @@ class CachedDataStoreStorageLayer<D : IDataStoreObject> :
 
     override fun deleteSync(identifier: UUID)
     {
-        connection.useResource {
-            remove(identifier)
-        }
+        connection.getConnection().remove(identifier)
     }
 }

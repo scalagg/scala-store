@@ -21,6 +21,8 @@ enum class DataStoreStorageType(
     fun validate()
     {
         if (!queryable)
+        {
             throw RuntimeException("Cannot use a non-queryable type")
+        }
     }
 }

@@ -12,6 +12,7 @@ import gg.scala.store.storage.storable.IDataStoreObject
 import gg.scala.store.storage.type.DataStoreStorageType
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 /**
@@ -46,6 +47,15 @@ open class DataStoreObjectController<D : IDataStoreObject>(
         )
 
         localLayerCache[DataStoreStorageType.CACHE] = CachedDataStoreStorageLayer()
+    }
+
+    fun localCache(): ConcurrentHashMap<UUID, D>
+    {
+        return useLayerWithReturn<CachedDataStoreStorageLayer<D>, ConcurrentHashMap<UUID, D>>(
+            DataStoreStorageType.CACHE
+        ) {
+            this.connection.handle
+        }
     }
 
     inline fun <reified T : AbstractDataStoreStorageLayer<*, D, *>, U> useLayerWithReturn(
