@@ -1,70 +1,70 @@
 package gg.scala.store.connection.redis
 
 import gg.scala.store.connection.AbstractDataStoreConnection
-import redis.clients.jedis.Jedis
-import redis.clients.jedis.JedisPool
-import redis.clients.jedis.exceptions.JedisException
-import java.io.IOException
+import io.lettuce.core.RedisClient
+import io.lettuce.core.api.StatefulRedisConnection
 import kotlin.properties.Delegates
 
 /**
  * @author GrowlyX
  * @since 12/30/2021
  */
-abstract class AbstractDataStoreRedisConnection : AbstractDataStoreConnection<JedisPool, Jedis>()
+abstract class AbstractDataStoreRedisConnection : AbstractDataStoreConnection<RedisClient, StatefulRedisConnection<String, String>>()
 {
-    internal var handle by Delegates.notNull<JedisPool>()
+    private var handle by Delegates.notNull<RedisClient>()
+    lateinit var connection: StatefulRedisConnection<String, String>
 
-    abstract fun getAppliedResource(): Jedis
+    private fun getAppliedResource(): StatefulRedisConnection<String, String>
+    {
+        return try
+        {
+            connection
+        } catch (exception: Exception)
+        {
+            val connection = createNewConnection()
+            setConnection(connection)
+
+            this.connection = connection.connect()
+            this.connection
+        }
+    }
 
     override fun getConnection() = handle
 
-    override fun useResource(lambda: Jedis.() -> Unit)
+    override fun useResource(lambda: StatefulRedisConnection<String, String>.() -> Unit)
     {
         try
         {
             val applied = getAppliedResource()
             lambda.invoke(applied)
-
-            applied.close()
-        } catch (exception: JedisException)
+        } catch (exception: Exception)
         {
             LOGGER.info(exception.stackTraceToString())
         }
     }
 
     override fun <T> useResourceWithReturn(
-        lambda: Jedis.() -> T
+        lambda: StatefulRedisConnection<String, String>.() -> T
     ): T?
     {
         return try
         {
             val applied = getAppliedResource()
-
-            val resource = lambda.invoke(applied)
-            applied.close()
-
-            resource
-        } catch (exception: JedisException)
+            lambda.invoke(applied)
+        } catch (exception: Exception)
         {
             LOGGER.info(exception.stackTraceToString())
             null
         }
     }
 
-    override fun setConnection(connection: JedisPool)
+    override fun setConnection(connection: RedisClient)
     {
         handle = connection
     }
 
     override fun close()
     {
-        try
-        {
-            handle.close()
-        } catch (exception: Exception)
-        {
-            throw IOException(exception.message)
-        }
+        handle.shutdown()
     }
 }

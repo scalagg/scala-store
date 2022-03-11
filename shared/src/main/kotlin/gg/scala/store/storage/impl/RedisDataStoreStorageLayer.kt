@@ -56,7 +56,7 @@ class RedisDataStoreStorageLayer<D : IDataStoreObject>(
     {
         runSafely {
             connection.useResource {
-                hset(
+                sync().hset(
                     section, data.identifier.toString(),
                     container.serializer.serialize(data)
                 )
@@ -68,7 +68,7 @@ class RedisDataStoreStorageLayer<D : IDataStoreObject>(
     {
         return runSafelyReturn {
             val serialized = connection.useResourceWithReturn {
-                hget(section, identifier.toString())
+                sync().hget(section, identifier.toString())
             } ?: return@runSafelyReturn null
 
             return@runSafelyReturn container.serializer
@@ -80,7 +80,7 @@ class RedisDataStoreStorageLayer<D : IDataStoreObject>(
     {
         return runSafelyReturn {
             val serialized = connection.useResourceWithReturn {
-                hgetAll(section)
+                sync().hgetall(section)
             } ?: return@runSafelyReturn mutableMapOf()
 
             val deserialized = mutableMapOf<UUID, D>()
@@ -99,7 +99,7 @@ class RedisDataStoreStorageLayer<D : IDataStoreObject>(
     {
         runSafely {
             connection.useResource {
-                hdel(section, identifier.toString())
+                sync().hdel(section, identifier.toString())
             }
         }
     }

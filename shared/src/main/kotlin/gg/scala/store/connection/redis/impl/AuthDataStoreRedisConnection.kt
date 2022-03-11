@@ -2,8 +2,8 @@ package gg.scala.store.connection.redis.impl
 
 import gg.scala.store.connection.redis.AbstractDataStoreRedisConnection
 import gg.scala.store.connection.redis.impl.details.DataStoreRedisConnectionDetails
-import redis.clients.jedis.Jedis
-import redis.clients.jedis.JedisPool
+import io.lettuce.core.RedisClient
+import io.lettuce.core.RedisURI
 
 /**
  * @author GrowlyX
@@ -13,25 +13,15 @@ class AuthDataStoreRedisConnection(
     private val details: DataStoreRedisConnectionDetails
 ) : AbstractDataStoreRedisConnection()
 {
-    override fun getAppliedResource(): Jedis
+    override fun createNewConnection(): RedisClient
     {
-        val resource = try
-        {
-            handle.resource
-        } catch (exception: Exception)
-        {
-            val connection = createNewConnection()
-            setConnection(connection)
-
-            connection.resource
-        }
-        resource.auth(details.password!!)
-
-        return resource
-    }
-
-    override fun createNewConnection(): JedisPool
-    {
-        return JedisPool(details.hostname, details.port)
+        return RedisClient.create(
+            RedisURI.builder()
+                .withDatabase(0)
+                .withPassword(details.password!!.toCharArray())
+                .withHost(details.hostname)
+                .withPort(details.port)
+                .build()
+        )
     }
 }

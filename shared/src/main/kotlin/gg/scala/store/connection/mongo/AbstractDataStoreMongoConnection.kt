@@ -3,7 +3,6 @@ package gg.scala.store.connection.mongo
 import com.mongodb.MongoClient
 import com.mongodb.client.MongoDatabase
 import gg.scala.store.connection.AbstractDataStoreConnection
-import redis.clients.jedis.exceptions.JedisException
 import kotlin.properties.Delegates
 
 /**
@@ -22,7 +21,7 @@ abstract class AbstractDataStoreMongoConnection : AbstractDataStoreConnection<Mo
         {
             val applied = getAppliedResource()
             lambda.invoke(applied)
-        } catch (exception: JedisException)
+        } catch (exception: Exception)
         {
             LOGGER.info(exception.stackTraceToString())
         }
