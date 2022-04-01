@@ -31,7 +31,7 @@ subprojects {
         compileOnly "org.mongodb:mongo-java-driver:3.12.10"
         compileOnly "com.google.code.gson:gson:2.9.0"
 
-        compileOnly "io.lettuce:lettuce-core:6.1.6.RELEASE"
+        compileOnly "io.lettuce:lettuce-core:6.1.8.RELEASE"
     }
 
     compileKotlin {
