@@ -12,17 +12,32 @@ import gg.scala.store.storage.storable.IDataStoreObject
  * @since 12/30/2021
  */
 enum class DataStoreStorageType(
-    private val queryable: Boolean = true
+    private val queryable: Boolean = true,
+    private val queryableExtensively: Boolean = false
 )
 {
-    MONGO, REDIS, CACHE,
-    ALL(false);
+    MONGO(
+        queryableExtensively = true
+    ),
+    REDIS,
+    CACHE,
+    ALL(
+        queryable = false
+    );
+
+    fun validateExtensive()
+    {
+        if (!queryableExtensively)
+        {
+            throw IllegalStateException("Cannot use a basic query type")
+        }
+    }
 
     fun validate()
     {
         if (!queryable)
         {
-            throw RuntimeException("Cannot use a non-queryable type")
+            throw IllegalStateException("Cannot use a non-queryable type")
         }
     }
 }

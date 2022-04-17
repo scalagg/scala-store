@@ -1,13 +1,12 @@
 package gg.scala.store.connection
 
-import java.io.Closeable
 import java.util.logging.Logger
 
 /**
  * @author GrowlyX
  * @since 12/30/2021
  */
-abstract class AbstractDataStoreConnection<C, R> : Closeable
+abstract class AbstractDataStoreConnection<C, R>
 {
     companion object
     {
@@ -24,4 +23,6 @@ abstract class AbstractDataStoreConnection<C, R> : Closeable
     abstract fun setConnection(connection: C)
 
     abstract fun createNewConnection(): C
+
+    abstract fun close()
 }

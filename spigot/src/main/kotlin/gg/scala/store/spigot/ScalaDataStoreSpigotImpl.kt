@@ -4,9 +4,10 @@ import gg.scala.store.ScalaDataStoreShared
 import gg.scala.store.connection.mongo.AbstractDataStoreMongoConnection
 import gg.scala.store.connection.mongo.impl.UriDataStoreMongoConnection
 import gg.scala.store.connection.redis.AbstractDataStoreRedisConnection
-import gg.scala.store.connection.redis.impl.AuthDataStoreRedisConnection
-import gg.scala.store.connection.redis.impl.NoAuthDataStoreRedisConnection
+import gg.scala.store.connection.redis.impl.DataStoreRedisConnection
+import io.lettuce.core.RedisURI
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 
 /**
  * @author GrowlyX
@@ -14,17 +15,27 @@ import org.bukkit.Bukkit
  */
 object ScalaDataStoreSpigotImpl : ScalaDataStoreShared()
 {
-    override fun getNewRedisConnection(): AbstractDataStoreRedisConnection
-    {
+    private val redisUri by lazy {
         val details = ScalaDataStoreSpigot.INSTANCE.redis
 
-        return if (details.password.isNullOrEmpty())
+        return@lazy if (details.password.isNullOrEmpty())
         {
-            NoAuthDataStoreRedisConnection(details)
+            RedisURI.create(details.hostname, details.port)
         } else
         {
-            AuthDataStoreRedisConnection(details)
+            RedisURI().apply {
+                this.password = details
+                    .password!!.toCharArray()
+
+                this.host = details.hostname
+                this.port = details.port
+            }
         }
+    }
+
+    override fun getNewRedisConnection(): AbstractDataStoreRedisConnection
+    {
+        return DataStoreRedisConnection(redisUri)
     }
 
     override fun getNewMongoConnection(): AbstractDataStoreMongoConnection
@@ -39,10 +50,9 @@ object ScalaDataStoreSpigotImpl : ScalaDataStoreShared()
         if (!ScalaDataStoreSpigot.INSTANCE.settings.debug)
             return
 
-        Bukkit.getOnlinePlayers()
-            .filter { it.isOp }
-            .forEach {
-                it.sendMessage("[$from] [Debug] $message")
-            }
+        Bukkit.broadcast(
+            "${ChatColor.GREEN}[$from] ${ChatColor.GRAY}[debug]: $message",
+            "ds.admin"
+        )
     }
 }

@@ -35,7 +35,7 @@ abstract class AbstractDataStoreStorageLayer<C : AbstractDataStoreConnection<*, 
 
     fun delete(identifier: UUID): CompletableFuture<Void>
     {
-        return CompletableFuture.runAsync() { deleteSync(identifier) }
+        return CompletableFuture.runAsync { deleteSync(identifier) }
     }
 
     fun loadAll(): CompletableFuture<Map<UUID, D>>
@@ -125,16 +125,12 @@ abstract class AbstractDataStoreStorageLayer<C : AbstractDataStoreConnection<*, 
         lambda: () -> Unit
     )
     {
-        try
-        {
-            kotlin.run {
-                lambda.invoke()
+        runCatching(lambda)
+            .onFailure {
+                if (printTrace)
+                {
+                    it.printStackTrace()
+                }
             }
-        } catch (exception: Exception)
-        {
-            if (printTrace)
-                exception.printStackTrace()
-        }
     }
-
 }

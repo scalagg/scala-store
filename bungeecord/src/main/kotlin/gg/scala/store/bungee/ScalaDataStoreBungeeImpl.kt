@@ -4,9 +4,9 @@ import gg.scala.store.ScalaDataStoreShared
 import gg.scala.store.connection.mongo.AbstractDataStoreMongoConnection
 import gg.scala.store.connection.mongo.impl.UriDataStoreMongoConnection
 import gg.scala.store.connection.redis.AbstractDataStoreRedisConnection
-import gg.scala.store.connection.redis.impl.AuthDataStoreRedisConnection
-import gg.scala.store.connection.redis.impl.NoAuthDataStoreRedisConnection
 import gg.scala.store.bungee.settings.BungeeSettingsProcessor
+import gg.scala.store.connection.redis.impl.DataStoreRedisConnection
+import io.lettuce.core.RedisURI
 
 /**
  * @author Foraged
@@ -14,17 +14,26 @@ import gg.scala.store.bungee.settings.BungeeSettingsProcessor
  */
 object ScalaDataStoreBungeeImpl : ScalaDataStoreShared()
 {
-    override fun getNewRedisConnection(): AbstractDataStoreRedisConnection
-    {
+    private val redisUri by lazy {
         val details = ScalaDataStoreBungee.INSTANCE.redis
 
-        return if (details.password.isNullOrEmpty())
+        return@lazy if (details.password.isNullOrEmpty())
         {
-            NoAuthDataStoreRedisConnection(details)
+            RedisURI.create(details.hostname, details.port)
         } else
         {
-            AuthDataStoreRedisConnection(details)
+            RedisURI.builder()
+                .withDatabase(0)
+                .withPassword(details.password!!.toCharArray())
+                .withHost(details.hostname)
+                .withPort(details.port)
+                .build()
         }
+    }
+
+    override fun getNewRedisConnection(): AbstractDataStoreRedisConnection
+    {
+        return DataStoreRedisConnection(redisUri)
     }
 
     override fun getNewMongoConnection(): AbstractDataStoreMongoConnection

@@ -1,6 +1,7 @@
 name: store-spigot
 version: 0.1.3
 main: gg.scala.store.spigot.ScalaDataStoreSpigot
+api-version: 1.18
 
 author: Scala
 website: https://scala.gg
