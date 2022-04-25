@@ -181,19 +181,27 @@ open class DataStoreObjectController<D : IDataStoreObject>(
         type: DataStoreStorageType = DataStoreStorageType.ALL
     ): CompletableFuture<Void>
     {
-        val layer = localLayerCache[type]
+        var properType = type
 
         // updating the last-saved timestamp
-        this.timestampField?.set(
-            data, System.currentTimeMillis()
-        )
+        this.timestampField?.apply {
+            set(data, System.currentTimeMillis())
+
+            // we want a copy stored in
+            // both MONGO & REDIS
+            properType = DataStoreStorageType.ALL
+        }
+
+        val layer = localLayerCache[properType]
 
         return if (layer == null)
         {
-            var status = CompletableFuture<Void>()
+            val status = CompletableFuture<Void>()
 
-            localLayerCache.values.forEach {
-                status = it.save(data)
+            localLayerCache.values.forEach { storageLayer ->
+                status.thenCompose {
+                    storageLayer.save(data)
+                }
             }
 
             status

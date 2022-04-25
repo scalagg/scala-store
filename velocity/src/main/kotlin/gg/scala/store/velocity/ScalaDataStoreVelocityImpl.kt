@@ -23,7 +23,6 @@ object ScalaDataStoreVelocityImpl : ScalaDataStoreShared()
         } else
         {
             RedisURI.builder()
-
                 .withDatabase(0)
                 .withPassword(details.password!!.toCharArray())
                 .withHost(details.hostname)
@@ -34,7 +33,7 @@ object ScalaDataStoreVelocityImpl : ScalaDataStoreShared()
 
     override fun getNewRedisConnection(): AbstractDataStoreRedisConnection
     {
-        return DataStoreRedisConnection(redisUri)
+        return DataStoreRedisConnection()
     }
 
     override fun getNewMongoConnection(): AbstractDataStoreMongoConnection
