@@ -1,17 +1,22 @@
 package gg.scala.store.connection.redis.impl
 
+import gg.scala.aware.AwareBuilder
+import gg.scala.aware.codec.codecs.interpretation.AwareMessageCodec
+import gg.scala.aware.message.AwareMessage
 import gg.scala.store.connection.redis.AbstractDataStoreRedisConnection
-import io.lettuce.core.RedisClient
-import io.lettuce.core.RedisURI
+import java.util.logging.Logger
 
 /**
  * @author GrowlyX
  * @since 4/14/2022
  */
-class DataStoreRedisConnection(
-    private val redisURI: RedisURI
-) : AbstractDataStoreRedisConnection()
+class DataStoreRedisConnection : AbstractDataStoreRedisConnection()
 {
-    override fun createNewConnection(): RedisClient =
-        RedisClient.create(redisURI)
+    override fun createNewConnection() =
+        AwareBuilder.of<AwareMessage>("")
+            .codec(AwareMessageCodec)
+            .logger(
+                Logger.getLogger("DataStoreRedisConnection")
+            )
+            .build()
 }

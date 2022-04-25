@@ -1,7 +1,8 @@
 package gg.scala.store.connection.redis
 
+import gg.scala.aware.Aware
+import gg.scala.aware.message.AwareMessage
 import gg.scala.store.connection.AbstractDataStoreConnection
-import io.lettuce.core.RedisClient
 import io.lettuce.core.api.StatefulRedisConnection
 import kotlin.properties.Delegates
 
@@ -9,9 +10,9 @@ import kotlin.properties.Delegates
  * @author GrowlyX
  * @since 12/30/2021
  */
-abstract class AbstractDataStoreRedisConnection : AbstractDataStoreConnection<RedisClient, StatefulRedisConnection<String, String>>()
+abstract class AbstractDataStoreRedisConnection : AbstractDataStoreConnection<Aware<AwareMessage>, StatefulRedisConnection<String, String>>()
 {
-    private var handle by Delegates.notNull<RedisClient>()
+    private var handle by Delegates.notNull<Aware<AwareMessage>>()
     lateinit var connection: StatefulRedisConnection<String, String>
 
     private fun getAppliedResource(): StatefulRedisConnection<String, String>
@@ -24,7 +25,9 @@ abstract class AbstractDataStoreRedisConnection : AbstractDataStoreConnection<Re
             val connection = createNewConnection()
             setConnection(connection)
 
-            this.connection = connection.connect()
+            this.connection = connection
+                .internal().connect()
+
             this.connection
         }
     }
@@ -58,7 +61,7 @@ abstract class AbstractDataStoreRedisConnection : AbstractDataStoreConnection<Re
         }
     }
 
-    override fun setConnection(connection: RedisClient)
+    override fun setConnection(connection: Aware<AwareMessage>)
     {
         handle = connection
     }

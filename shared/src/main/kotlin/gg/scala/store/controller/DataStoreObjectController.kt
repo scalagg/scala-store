@@ -1,6 +1,7 @@
 package gg.scala.store.controller
 
 import gg.scala.store.ScalaDataStoreShared
+import gg.scala.store.controller.annotations.Timestamp
 import gg.scala.store.debug
 import gg.scala.store.serializer.DataStoreSerializer
 import gg.scala.store.serializer.serializers.GsonSerializer
@@ -10,6 +11,7 @@ import gg.scala.store.storage.impl.MongoDataStoreStorageLayer
 import gg.scala.store.storage.impl.RedisDataStoreStorageLayer
 import gg.scala.store.storage.storable.IDataStoreObject
 import gg.scala.store.storage.type.DataStoreStorageType
+import java.lang.reflect.Field
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
@@ -36,6 +38,9 @@ open class DataStoreObjectController<D : IDataStoreObject>(
         this.serializer = serializer
     }
 
+    private var timestampField: Field? = null
+    private var timestampThreshold = 2000L
+
     fun preLoadResources()
     {
         localLayerCache[DataStoreStorageType.MONGO] = MongoDataStoreStorageLayer(
@@ -45,6 +50,11 @@ open class DataStoreObjectController<D : IDataStoreObject>(
         localLayerCache[DataStoreStorageType.REDIS] = RedisDataStoreStorageLayer(
             ScalaDataStoreShared.INSTANCE.getNewRedisConnection(), this, dataType
         )
+
+        this.timestampField = dataType
+            .java.fields.firstOrNull {
+                it.isAnnotationPresent(Timestamp::class.java)
+            }
 
         localLayerCache[DataStoreStorageType.CACHE] = CachedDataStoreStorageLayer()
     }
@@ -81,24 +91,78 @@ open class DataStoreObjectController<D : IDataStoreObject>(
         }
     }
 
-    fun loadAndCache(
+    fun loadOptimalCopy(
         identifier: UUID,
-        ifAbsent: () -> D,
-        type: DataStoreStorageType
+        ifAbsent: () -> D
     ): CompletableFuture<D>
     {
-        val debugFrom = "${javaClass.simpleName}_${dataType.simpleName}"
-
+        val debugFrom = "${identifier}-${dataType.simpleName}"
         val start = System.currentTimeMillis()
-        "Loading $identifier...".debug(debugFrom)
 
-        return load(identifier, type).thenApply {
+        val extendedAbsent = {
+            "Creating new copy".debug(debugFrom)
+            ifAbsent.invoke()
+        }
+
+        val typeUsed = if (this.timestampField == null)
+            DataStoreStorageType.MONGO else DataStoreStorageType.REDIS
+
+        "Loading from ${typeUsed.name}...".debug(debugFrom)
+
+        return load(
+            identifier, typeUsed
+        ).thenApply {
             if (it == null)
-                "Couldn't find $identifier's data in ${type.name}".debug(debugFrom)
+                "Couldn't find a copy in ${typeUsed.name}".debug(debugFrom)
             else
-                "Found $identifier's data in ${type.name}".debug(debugFrom)
+                "Found copy in ${typeUsed.name}".debug(debugFrom)
 
-            val data = it ?: ifAbsent.invoke()
+            if (
+                this.timestampField != null &&
+                it != null
+            )
+            {
+                val timestamp = this
+                    .timestampField!!
+                    .get(it)
+
+                if (timestamp != null)
+                {
+                    "Found timestamp from copy".debug(debugFrom)
+
+                    val difference =
+                        System.currentTimeMillis() - timestamp as Long
+
+                    val exceedsThreshold =
+                        difference >= this.timestampThreshold
+
+                    if (exceedsThreshold)
+                    {
+                        "Timestamp exceeds threshold, retrieving from mongo".debug(debugFrom)
+
+                        return@thenApply this.load(
+                            identifier,
+                            DataStoreStorageType.MONGO
+                        ).join()
+                    }
+                }
+            }
+
+            val data = if (
+                it == null &&
+                this.timestampField != null
+            )
+            {
+                "Attempting to retrieve from MONGO".debug(debugFrom)
+
+                this.load(
+                    identifier,
+                    DataStoreStorageType.MONGO
+                ).join() ?: extendedAbsent.invoke()
+            } else
+            {
+                extendedAbsent.invoke()
+            }
 
             useLayer<CachedDataStoreStorageLayer<D>>(
                 DataStoreStorageType.CACHE
@@ -106,7 +170,7 @@ open class DataStoreObjectController<D : IDataStoreObject>(
                 this.saveSync(data)
             }
 
-            "Completed caching in ${System.currentTimeMillis() - start}ms".debug(debugFrom)
+            "Completed process in ${System.currentTimeMillis() - start}ms".debug(debugFrom)
 
             return@thenApply data
         }
@@ -118,6 +182,11 @@ open class DataStoreObjectController<D : IDataStoreObject>(
     ): CompletableFuture<Void>
     {
         val layer = localLayerCache[type]
+
+        // updating the last-saved timestamp
+        this.timestampField?.set(
+            data, System.currentTimeMillis()
+        )
 
         return if (layer == null)
         {

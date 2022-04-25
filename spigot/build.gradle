@@ -20,6 +20,4 @@ dependencies {
     implementation "com.github.mkotb:ConfigAPI:e1c8df3f13"
     implementation "org.mongodb:mongo-java-driver:3.12.10"
     implementation "com.google.code.gson:gson:2.9.0"
-
-    api "io.lettuce:lettuce-core:6.1.8.RELEASE"
 }
