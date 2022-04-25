@@ -32,8 +32,12 @@ object ScalaDataStoreSpigotImpl : ScalaDataStoreShared()
             return
 
         Bukkit.broadcast(
-            "${ChatColor.GREEN}[$from] ${ChatColor.GRAY}[debug]: $message",
+            "[$from] [debug] $message",
             "ds.admin"
         )
+
+        Bukkit.getPluginManager()
+            .getPlugin("store-spigot")
+            .logger.info("[$from] [debug] $message")
     }
 }
