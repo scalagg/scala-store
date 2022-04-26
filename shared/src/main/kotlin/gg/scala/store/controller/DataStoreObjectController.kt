@@ -159,10 +159,7 @@ open class DataStoreObjectController<D : IDataStoreObject>(
                     identifier,
                     DataStoreStorageType.MONGO
                 ).join() ?: extendedAbsent.invoke()
-            } else
-            {
-                extendedAbsent.invoke()
-            }
+            } else it ?: extendedAbsent.invoke()
 
             useLayer<CachedDataStoreStorageLayer<D>>(
                 DataStoreStorageType.CACHE
@@ -196,13 +193,12 @@ open class DataStoreObjectController<D : IDataStoreObject>(
 
         return if (layer == null)
         {
-            val status = CompletableFuture<Void>()
-
-            localLayerCache.values.forEach { storageLayer ->
-                status.thenCompose {
-                    storageLayer.save(data)
+            val status = CompletableFuture
+                .runAsync {
+                    localLayerCache.values.forEach { storageLayer ->
+                        storageLayer.save(data).join()
+                    }
                 }
-            }
 
             status
         } else
