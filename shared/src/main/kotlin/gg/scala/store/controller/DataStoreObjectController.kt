@@ -112,19 +112,21 @@ open class DataStoreObjectController<D : IDataStoreObject>(
         return load(
             identifier, typeUsed
         ).thenApply {
-            if (it == null)
+            var fetched = it
+
+            if (fetched == null)
                 "Couldn't find a copy in ${typeUsed.name}".debug(debugFrom)
             else
                 "Found copy in ${typeUsed.name}".debug(debugFrom)
 
             if (
                 this.timestampField != null &&
-                it != null
+                fetched != null
             )
             {
                 val timestamp = this
                     .timestampField!!
-                    .get(it)
+                    .get(fetched)
 
                 if (timestamp != null)
                 {
@@ -140,7 +142,7 @@ open class DataStoreObjectController<D : IDataStoreObject>(
                     {
                         "Timestamp exceeds threshold, retrieving from mongo".debug(debugFrom)
 
-                        return@thenApply this.load(
+                        fetched = this.load(
                             identifier,
                             DataStoreStorageType.MONGO
                         ).join()
@@ -149,7 +151,7 @@ open class DataStoreObjectController<D : IDataStoreObject>(
             }
 
             val data = if (
-                it == null &&
+                fetched == null &&
                 this.timestampField != null
             )
             {
@@ -159,7 +161,7 @@ open class DataStoreObjectController<D : IDataStoreObject>(
                     identifier,
                     DataStoreStorageType.MONGO
                 ).join() ?: extendedAbsent.invoke()
-            } else it ?: extendedAbsent.invoke()
+            } else fetched ?: extendedAbsent.invoke()
 
             useLayer<CachedDataStoreStorageLayer<D>>(
                 DataStoreStorageType.CACHE
