@@ -7,7 +7,7 @@ dependencies {
     implementation project(":shared")
 
     implementation "com.github.mkotb:ConfigAPI:e1c8df3f13"
-    implementation "io.lettuce:lettuce-core:6.1.8.RELEASE"
+    implementation 'io.lettuce:lettuce-core:6.3.0.STABLE'
     implementation "org.mongodb:mongo-java-driver:3.12.10"
     implementation "com.google.code.gson:gson:2.9.0"
 

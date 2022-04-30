@@ -5,6 +5,9 @@ repositories {
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+    implementation "gg.scala.aware:aware:1.0.8.2"
+
     compileOnly 'com.velocitypowered:velocity-api:3.0.1'
     kapt 'com.velocitypowered:velocity-api:3.0.1'
 
@@ -13,5 +16,5 @@ dependencies {
     implementation "org.mongodb:mongo-java-driver:3.12.10"
     implementation "com.google.code.gson:gson:2.9.0"
 
-    implementation "io.lettuce:lettuce-core:6.1.8.RELEASE"
+    implementation 'io.lettuce:lettuce-core:6.3.0.STABLE'
 }
