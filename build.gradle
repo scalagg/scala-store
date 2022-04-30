@@ -1,3 +1,5 @@
+import org.gradle.api.publish.maven.MavenPublication
+
 plugins {
     id "maven-publish"
     id "com.jfrog.artifactory" version "4.28.2"
@@ -62,7 +64,7 @@ subprojects {
     publishing {
         publications {
             shadow(MavenPublication) { publication ->
-                from components.kotlin
+                project.shadow.component(publication)
             }
         }
 
