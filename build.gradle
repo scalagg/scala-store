@@ -39,7 +39,7 @@ subprojects {
     dependencies {
         compileOnly "org.jetbrains.kotlin:kotlin-stdlib"
 
-        compileOnly "org.mongodb:mongo-java-driver:3.12.10"
+        compileOnly "org.mongodb:mongo-java-driver:3.12.11"
         compileOnly "com.google.code.gson:gson:2.9.0"
 
         compileOnly "gg.scala.aware:aware:1.0.8.2"
