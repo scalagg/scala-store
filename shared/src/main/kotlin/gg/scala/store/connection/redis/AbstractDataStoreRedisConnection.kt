@@ -42,6 +42,9 @@ abstract class AbstractDataStoreRedisConnection : AbstractDataStoreConnection<Aw
             lambda.invoke(applied)
         } catch (exception: Exception)
         {
+            if (exception.message == "Connection is closed")
+                return
+
             LOGGER.info(exception.stackTraceToString())
         }
     }
@@ -56,6 +59,9 @@ abstract class AbstractDataStoreRedisConnection : AbstractDataStoreConnection<Aw
             lambda.invoke(applied)
         } catch (exception: Exception)
         {
+            if (exception.message == "Connection is closed")
+                return
+
             LOGGER.info(exception.stackTraceToString())
             null
         }
