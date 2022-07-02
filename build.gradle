@@ -1,8 +1,8 @@
 plugins {
     id "maven-publish"
     id "com.jfrog.artifactory" version "4.28.2"
-    id "org.jetbrains.kotlin.jvm" version "1.6.20"
-    id "org.jetbrains.kotlin.kapt" version "1.6.20"
+    id "org.jetbrains.kotlin.jvm" version "1.7.0"
+    id "org.jetbrains.kotlin.kapt" version "1.7.0"
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
@@ -57,7 +57,7 @@ subprojects {
         compileOnly "com.google.code.gson:gson:2.9.0"
 
         compileOnly "gg.scala.aware:aware:1.0.8.2"
-        compileOnly 'io.lettuce:lettuce-core:6.3.0.STABLE'
+        compileOnly 'io.lettuce:lettuce-core:6.1.8.RELEASE'
     }
 
     compileKotlin {
@@ -69,7 +69,6 @@ subprojects {
         archiveClassifier.set("")
 
         exclude "**/*.kotlin_metadata"
-        exclude "**/*.kotlin_builtins"
         exclude "META-INF/"
 
         archiveFileName = "store-${project.name}.jar"

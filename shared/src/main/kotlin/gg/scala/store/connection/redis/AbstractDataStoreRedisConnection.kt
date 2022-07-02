@@ -60,7 +60,7 @@ abstract class AbstractDataStoreRedisConnection : AbstractDataStoreConnection<Aw
         } catch (exception: Exception)
         {
             if (exception.message == "Connection is closed")
-                return
+                return null
 
             LOGGER.info(exception.stackTraceToString())
             null
