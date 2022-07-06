@@ -6,7 +6,7 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    implementation "gg.scala.aware:aware:1.0.8.2"
+    implementation "gg.scala.aware:aware:1.0.8.3"
 
     compileOnly 'com.velocitypowered:velocity-api:3.0.1'
     kapt 'com.velocitypowered:velocity-api:3.0.1'
