@@ -57,7 +57,7 @@ subprojects {
         compileOnly "com.google.code.gson:gson:2.9.0"
 
         compileOnly "gg.scala.aware:aware:1.0.8.3"
-        compileOnly 'io.lettuce:lettuce-core:6.1.8.RELEASE'
+        compileOnly 'io.lettuce:lettuce-core:6.2.2.STABLE'
     }
 
     compileKotlin {
