@@ -14,6 +14,7 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
     implementation "org.jetbrains.kotlin:kotlin-reflect"
+    implementation "gg.scala.aware:aware:1.1.0"
 
     implementation project(":shared")
 
