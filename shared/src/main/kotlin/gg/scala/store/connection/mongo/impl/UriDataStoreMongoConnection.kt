@@ -11,7 +11,8 @@ import gg.scala.store.connection.mongo.impl.details.DataStoreMongoConnectionDeta
  * @since 12/30/2021
  */
 class UriDataStoreMongoConnection(
-    private val details: DataStoreMongoConnectionDetails
+    private val details: DataStoreMongoConnectionDetails,
+    private val client: MongoClient,
 ) : AbstractDataStoreMongoConnection()
 {
     override fun getAppliedResource(): MongoDatabase
@@ -40,10 +41,5 @@ class UriDataStoreMongoConnection(
         }
     }
 
-    override fun createNewConnection(): MongoClient
-    {
-        return MongoClient(
-            MongoClientURI(details.uri)
-        )
-    }
+    override fun createNewConnection() = client
 }

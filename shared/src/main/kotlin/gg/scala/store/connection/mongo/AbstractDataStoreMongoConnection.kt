@@ -43,6 +43,6 @@ abstract class AbstractDataStoreMongoConnection : AbstractDataStoreConnection<Mo
 
     override fun close()
     {
-        handle.close()
+//        handle.close()
     }
 }

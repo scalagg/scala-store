@@ -1,5 +1,8 @@
 package gg.scala.store.spigot
 
+import com.mongodb.MongoClient
+import com.mongodb.MongoClientURI
+import gg.scala.aware.AwareHub
 import gg.scala.store.ScalaDataStoreShared
 import gg.scala.store.connection.mongo.impl.details.DataStoreMongoConnectionDetails
 import gg.scala.store.connection.redis.impl.details.DataStoreRedisConnectionDetails
@@ -26,6 +29,7 @@ class ScalaDataStoreSpigot : JavaPlugin()
     var settings by Delegates.notNull<ScalaDataStoreSpigotSettings>()
 
     var configApi: ConfigFactory = ConfigFactory.newFactory(this)
+    var client: MongoClient? = null
 
     override fun onEnable()
     {
@@ -45,8 +49,23 @@ class ScalaDataStoreSpigot : JavaPlugin()
         )
     }
 
+    fun createClient(): MongoClient
+    {
+        if (client == null)
+        {
+            client = MongoClient(
+                MongoClientURI(mongo.uri)
+            )
+        }
+
+        return client!!
+    }
+
     override fun onDisable()
     {
         DataStoreObjectControllerCache.closeAll()
+
+        AwareHub.close()
+        client?.close()
     }
 }

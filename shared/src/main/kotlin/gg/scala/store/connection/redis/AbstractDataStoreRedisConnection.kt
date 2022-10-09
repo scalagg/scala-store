@@ -74,6 +74,6 @@ abstract class AbstractDataStoreRedisConnection : AbstractDataStoreConnection<Aw
 
     override fun close()
     {
-        handle.shutdown()
+//        handle.shutdown()
     }
 }

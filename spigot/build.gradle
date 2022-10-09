@@ -13,7 +13,7 @@ dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    compileOnly "org.jetbrains.kotlin:kotlin-reflect"
+    implementation "org.jetbrains.kotlin:kotlin-reflect"
 
     implementation project(":shared")
 

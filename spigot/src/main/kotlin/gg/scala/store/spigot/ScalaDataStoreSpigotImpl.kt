@@ -22,7 +22,7 @@ object ScalaDataStoreSpigotImpl : ScalaDataStoreShared()
     override fun getNewMongoConnection(): AbstractDataStoreMongoConnection
     {
         return UriDataStoreMongoConnection(
-            ScalaDataStoreSpigot.INSTANCE.mongo
+            ScalaDataStoreSpigot.INSTANCE.createClient()
         )
     }
 
