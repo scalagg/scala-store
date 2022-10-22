@@ -64,8 +64,6 @@ class ScalaDataStoreSpigot : JavaPlugin()
     override fun onDisable()
     {
         DataStoreObjectControllerCache.closeAll()
-
-        AwareHub.close()
         client?.close()
     }
 }

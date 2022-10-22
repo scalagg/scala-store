@@ -1,5 +1,6 @@
 package gg.scala.store.bungee
 
+import com.mongodb.MongoClient
 import gg.scala.store.ScalaDataStoreShared
 import gg.scala.store.bungee.settings.BungeeSettingsProcessor
 import gg.scala.store.connection.mongo.AbstractDataStoreMongoConnection
@@ -13,6 +14,8 @@ import gg.scala.store.connection.redis.impl.DataStoreRedisConnection
  */
 object ScalaDataStoreBungeeImpl : ScalaDataStoreShared()
 {
+    override fun forceDisableRedisThreshold() = false
+
     override fun getNewRedisConnection(): AbstractDataStoreRedisConnection
     {
         return DataStoreRedisConnection()
@@ -21,7 +24,7 @@ object ScalaDataStoreBungeeImpl : ScalaDataStoreShared()
     override fun getNewMongoConnection(): AbstractDataStoreMongoConnection
     {
         return UriDataStoreMongoConnection(
-            ScalaDataStoreBungee.INSTANCE.mongo
+            ScalaDataStoreBungee.INSTANCE.mongo, MongoClient()
         )
     }
 

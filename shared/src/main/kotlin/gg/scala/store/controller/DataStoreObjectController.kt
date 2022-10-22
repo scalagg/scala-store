@@ -51,10 +51,16 @@ open class DataStoreObjectController<D : IDataStoreObject>(
             ScalaDataStoreShared.INSTANCE.getNewRedisConnection(), this, dataType
         )
 
-        this.timestampField = dataType
-            .java.fields.firstOrNull {
-                it.isAnnotationPresent(Timestamp::class.java)
-            }
+        this.timestampField = if (ScalaDataStoreShared.INSTANCE.forceDisableRedisThreshold())
+        {
+            null
+        } else
+        {
+            dataType
+                .java.fields.firstOrNull {
+                    it.isAnnotationPresent(Timestamp::class.java)
+                }
+        }
 
         localLayerCache[DataStoreStorageType.CACHE] = CachedDataStoreStorageLayer()
     }

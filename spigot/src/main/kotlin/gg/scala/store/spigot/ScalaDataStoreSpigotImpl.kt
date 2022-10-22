@@ -14,6 +14,8 @@ import org.bukkit.ChatColor
  */
 object ScalaDataStoreSpigotImpl : ScalaDataStoreShared()
 {
+    override fun forceDisableRedisThreshold() = true
+
     override fun getNewRedisConnection(): AbstractDataStoreRedisConnection
     {
         return DataStoreRedisConnection()

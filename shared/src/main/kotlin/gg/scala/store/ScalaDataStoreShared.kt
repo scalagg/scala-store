@@ -19,6 +19,7 @@ abstract class ScalaDataStoreShared
         var INSTANCE by Delegates.notNull<ScalaDataStoreShared>()
     }
 
+    abstract fun forceDisableRedisThreshold(): Boolean
     abstract fun getNewRedisConnection(): AbstractDataStoreRedisConnection
     abstract fun getNewMongoConnection(): AbstractDataStoreMongoConnection
 
