@@ -1,5 +1,6 @@
 package gg.scala.store.velocity
 
+import com.mongodb.MongoClient
 import gg.scala.store.ScalaDataStoreShared
 import gg.scala.store.connection.mongo.AbstractDataStoreMongoConnection
 import gg.scala.store.connection.mongo.impl.UriDataStoreMongoConnection
@@ -13,6 +14,11 @@ import gg.scala.store.velocity.settings.VelocitySettingsProcessor
  */
 object ScalaDataStoreVelocityImpl : ScalaDataStoreShared()
 {
+    override fun forceDisableRedisThreshold(): Boolean
+    {
+        TODO("Not yet implemented")
+    }
+
     override fun getNewRedisConnection(): AbstractDataStoreRedisConnection
     {
         return DataStoreRedisConnection()
@@ -21,7 +27,7 @@ object ScalaDataStoreVelocityImpl : ScalaDataStoreShared()
     override fun getNewMongoConnection(): AbstractDataStoreMongoConnection
     {
         return UriDataStoreMongoConnection(
-            ScalaDataStoreVelocity.INSTANCE.mongo
+            ScalaDataStoreVelocity.INSTANCE.mongo, MongoClient()
         )
     }
 

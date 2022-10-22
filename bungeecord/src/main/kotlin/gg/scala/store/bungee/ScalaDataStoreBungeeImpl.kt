@@ -14,7 +14,7 @@ import gg.scala.store.connection.redis.impl.DataStoreRedisConnection
  */
 object ScalaDataStoreBungeeImpl : ScalaDataStoreShared()
 {
-    override fun forceDisableRedisThreshold() = false
+    override fun forceDisableRedisThreshold() = true
 
     override fun getNewRedisConnection(): AbstractDataStoreRedisConnection
     {
