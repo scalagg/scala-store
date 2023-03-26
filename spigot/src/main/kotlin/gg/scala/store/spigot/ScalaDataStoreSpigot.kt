@@ -2,7 +2,6 @@ package gg.scala.store.spigot
 
 import com.mongodb.MongoClient
 import com.mongodb.MongoClientURI
-import gg.scala.aware.AwareHub
 import gg.scala.store.ScalaDataStoreShared
 import gg.scala.store.connection.mongo.impl.details.DataStoreMongoConnectionDetails
 import gg.scala.store.connection.redis.impl.details.DataStoreRedisConnectionDetails

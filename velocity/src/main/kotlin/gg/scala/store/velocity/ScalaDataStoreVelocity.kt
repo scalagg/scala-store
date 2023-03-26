@@ -1,6 +1,8 @@
 package gg.scala.store.velocity
 
 import com.google.inject.Inject
+import com.mongodb.MongoClient
+import com.mongodb.MongoClientURI
 import com.velocitypowered.api.event.Continuation
 import com.velocitypowered.api.event.PostOrder
 import com.velocitypowered.api.event.Subscribe
@@ -51,6 +53,20 @@ class ScalaDataStoreVelocity @Inject constructor(
         {
             it.mkdirs()
         }
+    }
+
+    private var client: MongoClient? = null
+
+    fun createClient(): MongoClient
+    {
+        if (client == null)
+        {
+            client = MongoClient(
+                MongoClientURI(mongo.uri)
+            )
+        }
+
+        return client!!
     }
 
     @Subscribe(order = PostOrder.FIRST)
