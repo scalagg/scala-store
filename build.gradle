@@ -21,7 +21,7 @@ String environmental(String key)
 
 allprojects {
     group "gg.scala.store"
-    version "0.1.5"
+    version "0.1.6"
 
     repositories {
         mavenCentral()

@@ -129,6 +129,8 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
         return entries
     }
 
+    fun loadSyncRaw() = collection.find()
+
     fun loadFilteredSync(
         iterable: FindIterable<Document>.() -> FindIterable<Document>
     ): Map<UUID, D>
