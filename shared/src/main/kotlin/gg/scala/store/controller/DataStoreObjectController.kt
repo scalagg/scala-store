@@ -77,7 +77,7 @@ open class DataStoreObjectController<D : IDataStoreObject>(
     fun mongo(): MongoDataStoreStorageLayer<D>
     {
         return useLayerWithReturn<MongoDataStoreStorageLayer<D>, MongoDataStoreStorageLayer<D>>(
-            DataStoreStorageType.CACHE
+            DataStoreStorageType.MONGO
         ) {
             this
         }

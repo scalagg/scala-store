@@ -1,6 +1,7 @@
 package gg.scala.store.storage.impl
 
 import com.mongodb.client.AggregateIterable
+import com.mongodb.client.FindIterable
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Aggregates
 import com.mongodb.client.model.Filters
@@ -120,6 +121,21 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
         val entries = mutableMapOf<UUID, D>()
 
         for (document in collection.find())
+        {
+            entries[UUID.fromString(document.getString("_id"))!!] =
+                container.serializer.deserialize(dataType, document.toJson())
+        }
+
+        return entries
+    }
+
+    fun loadFilteredSync(
+        iterable: FindIterable<Document>.() -> FindIterable<Document>
+    ): Map<UUID, D>
+    {
+        val entries = mutableMapOf<UUID, D>()
+
+        for (document in collection.find().iterable())
         {
             entries[UUID.fromString(document.getString("_id"))!!] =
                 container.serializer.deserialize(dataType, document.toJson())
