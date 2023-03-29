@@ -10,6 +10,7 @@ import com.mongodb.client.model.IndexModel
 import com.mongodb.client.model.UpdateOptions
 import gg.scala.store.connection.mongo.AbstractDataStoreMongoConnection
 import gg.scala.store.controller.DataStoreObjectController
+import gg.scala.store.controller.annotations.Indexed
 import gg.scala.store.storage.AbstractDataStoreStorageLayer
 import gg.scala.store.storage.storable.IDataStoreObject
 import org.bson.Document
@@ -36,6 +37,14 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
         collection = connection
             .useResourceWithReturn {
                 this.getCollection(dataType.simpleName!!)
+            }
+
+        dataType.java.declaredFields
+            .filter {
+                it.isAnnotationPresent(Indexed::class.java)
+            }
+            .forEach {
+                collection.createIndex(BasicDBObject(it.name, 1))
             }
     }
 
