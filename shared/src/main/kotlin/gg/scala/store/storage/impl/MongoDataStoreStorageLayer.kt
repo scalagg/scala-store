@@ -71,11 +71,11 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
     {
         val entries = mutableMapOf<UUID, D>()
 
-        for (document in collection.find(filter))
-        {
-            entries[UUID.fromString(document.getString("_id"))!!] =
-                container.serializer.deserialize(dataType, document.toJson())
-        }
+        collection.find()
+            .forEach { document ->
+                entries[UUID.fromString(document.getString("_id"))!!] =
+                    container.serializer.deserialize(dataType, document.toJson())
+            }
 
         return entries
     }
@@ -138,11 +138,11 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
     {
         val entries = mutableMapOf<UUID, D>()
 
-        for (document in collection.find())
-        {
-            entries[UUID.fromString(document.getString("_id"))!!] =
-                container.serializer.deserialize(dataType, document.toJson())
-        }
+        collection.find()
+            .forEach { document ->
+                entries[UUID.fromString(document.getString("_id"))!!] =
+                    container.serializer.deserialize(dataType, document.toJson())
+            }
 
         return entries
     }
@@ -155,11 +155,11 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
     {
         val entries = mutableMapOf<UUID, D>()
 
-        for (document in collection.find().iterable())
-        {
-            entries[UUID.fromString(document.getString("_id"))!!] =
-                container.serializer.deserialize(dataType, document.toJson())
-        }
+        iterable(collection.find())
+            .forEach { document ->
+                entries[UUID.fromString(document.getString("_id"))!!] =
+                    container.serializer.deserialize(dataType, document.toJson())
+            }
 
         return entries
     }
