@@ -71,7 +71,7 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
     {
         val entries = mutableMapOf<UUID, D>()
 
-        collection.find()
+        collection.find(filter)
             .forEach { document ->
                 entries[UUID.fromString(document.getString("_id"))!!] =
                     container.serializer.deserialize(dataType, document.toJson())
