@@ -1,10 +1,12 @@
 package gg.scala.store.storage.impl
 
+import com.mongodb.BasicDBObject
 import com.mongodb.client.AggregateIterable
 import com.mongodb.client.FindIterable
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Aggregates
 import com.mongodb.client.model.Filters
+import com.mongodb.client.model.IndexModel
 import com.mongodb.client.model.UpdateOptions
 import gg.scala.store.connection.mongo.AbstractDataStoreMongoConnection
 import gg.scala.store.controller.DataStoreObjectController
@@ -35,6 +37,13 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
             .useResourceWithReturn {
                 this.getCollection(dataType.simpleName!!)
             }
+    }
+
+    fun createIndexesFor(vararg indexes: String)
+    {
+        indexes.forEach { index ->
+            collection.createIndex(BasicDBObject(index, 1))
+        }
     }
 
     fun withCustomCollection(
