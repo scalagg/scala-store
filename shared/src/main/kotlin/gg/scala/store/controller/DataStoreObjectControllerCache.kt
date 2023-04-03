@@ -1,6 +1,7 @@
 package gg.scala.store.controller
 
 import gg.scala.store.storage.storable.IDataStoreObject
+import io.lettuce.core.api.StatefulRedisConnection
 import kotlin.reflect.KClass
 
 /**
@@ -10,6 +11,8 @@ import kotlin.reflect.KClass
 object DataStoreObjectControllerCache
 {
     val containers = mutableMapOf<KClass<out IDataStoreObject>, DataStoreObjectController<*>>()
+
+    var kvConnection: StatefulRedisConnection<String, String>? = null
 
     fun closeAll()
     {

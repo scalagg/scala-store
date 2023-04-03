@@ -3,6 +3,7 @@ package gg.scala.store.connection.redis
 import gg.scala.aware.Aware
 import gg.scala.aware.message.AwareMessage
 import gg.scala.store.connection.AbstractDataStoreConnection
+import gg.scala.store.controller.DataStoreObjectControllerCache
 import io.lettuce.core.api.StatefulRedisConnection
 import kotlin.properties.Delegates
 
@@ -10,7 +11,8 @@ import kotlin.properties.Delegates
  * @author GrowlyX
  * @since 12/30/2021
  */
-abstract class AbstractDataStoreRedisConnection : AbstractDataStoreConnection<Aware<AwareMessage>, StatefulRedisConnection<String, String>>()
+abstract class AbstractDataStoreRedisConnection :
+    AbstractDataStoreConnection<Aware<AwareMessage>, StatefulRedisConnection<String, String>>()
 {
     private var handle by Delegates.notNull<Aware<AwareMessage>>()
     lateinit var connection: StatefulRedisConnection<String, String>
@@ -25,8 +27,13 @@ abstract class AbstractDataStoreRedisConnection : AbstractDataStoreConnection<Aw
             val connection = createNewConnection()
             setConnection(connection)
 
-            this.connection = connection
-                .internal().connect()
+            this.connection = DataStoreObjectControllerCache
+                .kvConnection
+                ?: run {
+                    DataStoreObjectControllerCache.kvConnection = connection
+                        .internal().connect()
+                    DataStoreObjectControllerCache.kvConnection!!
+                }
 
             this.connection
         }

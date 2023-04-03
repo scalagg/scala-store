@@ -62,7 +62,7 @@ class ScalaDataStoreSpigot : JavaPlugin()
 
     override fun onDisable()
     {
-        DataStoreObjectControllerCache.closeAll()
         client?.close()
+        DataStoreObjectControllerCache.closeAll()
     }
 }
