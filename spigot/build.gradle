@@ -15,8 +15,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
     implementation "org.jetbrains.kotlin:kotlin-reflect"
 
-    implementation "gg.scala.aware:aware:1.1.5"
-    implementation "io.lettuce:lettuce-core:6.2.2.RELEASE"
+    implementation "gg.scala.aware:aware:1.1.7"
+    implementation "io.lettuce:lettuce-core:6.2.3.RELEASE"
 
     implementation project(":shared")
 
