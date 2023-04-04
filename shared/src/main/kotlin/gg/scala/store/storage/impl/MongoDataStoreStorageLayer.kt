@@ -1,12 +1,9 @@
 package gg.scala.store.storage.impl
 
 import com.mongodb.BasicDBObject
-import com.mongodb.client.AggregateIterable
 import com.mongodb.client.FindIterable
 import com.mongodb.client.MongoCollection
-import com.mongodb.client.model.Aggregates
 import com.mongodb.client.model.Filters
-import com.mongodb.client.model.IndexModel
 import com.mongodb.client.model.UpdateOptions
 import gg.scala.store.connection.mongo.AbstractDataStoreMongoConnection
 import gg.scala.store.controller.DataStoreObjectController
@@ -118,22 +115,6 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
         )
     }
 
-    fun loadAggregate(
-        pipe: List<Bson>,
-        agg: AggregateIterable<Document>.() -> AggregateIterable<Document>
-    ): Map<UUID, D>
-    {
-        val entries = mutableMapOf<UUID, D>()
-
-        agg.invoke(collection.aggregate(pipe))
-            .forEach { document ->
-                entries[UUID.fromString(document.getString("_id"))!!] =
-                    container.serializer.deserialize(dataType, document.toJson())
-            }
-
-        return entries
-    }
-
     override fun loadAllSync(): Map<UUID, D>
     {
         val entries = mutableMapOf<UUID, D>()
@@ -148,6 +129,7 @@ class MongoDataStoreStorageLayer<D : IDataStoreObject>(
     }
 
     fun loadSyncRaw() = collection.find()
+    fun aggregate(pipeline: List<Bson>) = collection.aggregate(pipeline)
 
     fun loadFilteredSync(
         iterable: FindIterable<Document>.() -> FindIterable<Document>
