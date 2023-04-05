@@ -14,20 +14,21 @@ import org.bukkit.ChatColor
  */
 object ScalaDataStoreSpigotImpl : ScalaDataStoreShared()
 {
-    override fun forceDisableRedisThreshold() = true
-
-    override fun getNewRedisConnection(): AbstractDataStoreRedisConnection
-    {
-        return DataStoreRedisConnection()
+    private val redisConnection by lazy {
+        DataStoreRedisConnection()
     }
 
-    override fun getNewMongoConnection(): AbstractDataStoreMongoConnection
-    {
-        return UriDataStoreMongoConnection(
+    private val mongoConnection by lazy {
+        UriDataStoreMongoConnection(
             ScalaDataStoreSpigot.INSTANCE.mongo,
             ScalaDataStoreSpigot.INSTANCE.createClient()
         )
     }
+
+    override fun forceDisableRedisThreshold() = true
+
+    override fun getNewRedisConnection() = redisConnection
+    override fun getNewMongoConnection() = mongoConnection
 
     override fun debug(from: String, message: String)
     {
