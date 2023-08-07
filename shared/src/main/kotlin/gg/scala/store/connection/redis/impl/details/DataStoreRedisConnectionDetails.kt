@@ -9,5 +9,6 @@ data class DataStoreRedisConnectionDetails
 constructor(
     val hostname: String = "127.0.0.1",
     val port: Int = 6379,
-    val password: String? = null
+    val password: String? = null,
+    val database: Int? = 0
 )

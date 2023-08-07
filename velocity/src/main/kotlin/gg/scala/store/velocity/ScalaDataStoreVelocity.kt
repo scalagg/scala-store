@@ -93,7 +93,7 @@ class ScalaDataStoreVelocity @Inject constructor(
         VelocitySettingsProcessor.locate<VelocityRedisConnectionDetails>()
             ?.let {
                 redis = DataStoreRedisConnectionDetails(
-                    it.hostname, it.port, it.password
+                    it.hostname, it.port, it.password, it.database
                 )
             }
 
