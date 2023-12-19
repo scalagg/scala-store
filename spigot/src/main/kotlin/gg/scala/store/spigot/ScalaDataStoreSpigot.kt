@@ -89,5 +89,6 @@ class ScalaDataStoreSpigot : JavaPlugin()
     {
         client?.close()
         DataStoreObjectControllerCache.closeAll()
+        AwareHub.close()
     }
 }

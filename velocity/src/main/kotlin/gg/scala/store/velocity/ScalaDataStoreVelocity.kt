@@ -8,6 +8,7 @@ import com.velocitypowered.api.event.Continuation
 import com.velocitypowered.api.event.PostOrder
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
+import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
 import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
@@ -89,6 +90,13 @@ class ScalaDataStoreVelocity @Inject constructor(
         }
 
         return client!!
+    }
+
+    @Subscribe
+    fun onProxyClose(event: ProxyShutdownEvent)
+    {
+        client?.close()
+        AwareHub.close()
     }
 
     @Subscribe(order = PostOrder.FIRST)
