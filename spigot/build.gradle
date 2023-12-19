@@ -10,12 +10,12 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
+    compileOnly fileTree("buildlibs")
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
     implementation "org.jetbrains.kotlin:kotlin-reflect"
 
-    implementation "gg.scala.aware:aware:1.1.8"
+    implementation "gg.scala.aware:aware:1.2.1"
     implementation "io.lettuce:lettuce-core:6.2.3.RELEASE.MOD"
 
     implementation project(":shared")

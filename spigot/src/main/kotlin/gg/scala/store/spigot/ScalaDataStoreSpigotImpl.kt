@@ -1,12 +1,9 @@
 package gg.scala.store.spigot
 
 import gg.scala.store.ScalaDataStoreShared
-import gg.scala.store.connection.mongo.AbstractDataStoreMongoConnection
 import gg.scala.store.connection.mongo.impl.UriDataStoreMongoConnection
-import gg.scala.store.connection.redis.AbstractDataStoreRedisConnection
 import gg.scala.store.connection.redis.impl.DataStoreRedisConnection
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 
 /**
  * @author GrowlyX
@@ -21,7 +18,7 @@ object ScalaDataStoreSpigotImpl : ScalaDataStoreShared()
     private val mongoConnection by lazy {
         UriDataStoreMongoConnection(
             ScalaDataStoreSpigot.INSTANCE.mongo,
-            ScalaDataStoreSpigot.INSTANCE.createClient()
+            ScalaDataStoreSpigot.INSTANCE.createMongoClient()
         )
     }
 

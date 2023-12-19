@@ -24,7 +24,7 @@ object ScalaDataStoreVelocityImpl : ScalaDataStoreShared()
     {
         return UriDataStoreMongoConnection(
             ScalaDataStoreVelocity.INSTANCE.mongo,
-            ScalaDataStoreVelocity.INSTANCE.createClient()
+            ScalaDataStoreVelocity.INSTANCE.createMongoClient()
         )
     }
 

@@ -6,22 +6,9 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
-String environmental(String key)
-{
-    final String environment =
-        System.getenv(key)
-
-    if (environment != null)
-    {
-        return environment
-    }
-
-    return project.property(key)
-}
-
 allprojects {
     group "gg.scala.store"
-    version "0.2.0"
+    version "1.0.0"
 
     repositories {
         mavenCentral()
@@ -31,11 +18,11 @@ allprojects {
 
         maven {
             name "scala"
-            url "${environmental("artifactory_contextUrl")}/gradle-release"
+            url "${property("artifactory_contextUrl")}/gradle-release"
 
             credentials {
-                username environmental("artifactory_user")
-                password environmental("artifactory_password")
+                username property("artifactory_user")
+                password property("artifactory_password")
             }
         }
     }
@@ -56,7 +43,7 @@ subprojects {
         compileOnly "org.mongodb:mongo-java-driver:3.12.11"
         compileOnly "com.google.code.gson:gson:2.9.1"
 
-        compileOnly "gg.scala.aware:aware:1.1.7"
+        compileOnly "gg.scala.aware:aware:1.2.1"
         compileOnly 'io.lettuce:lettuce-core:6.2.3.RELEASE.MOD'
     }
 
@@ -84,11 +71,11 @@ subprojects {
         repositories {
             maven {
                 name "scala"
-                url "${environmental("artifactory_contextUrl")}/gradle-release"
+                url "${property("artifactory_contextUrl")}/gradle-release"
 
                 credentials {
-                    username environmental("artifactory_user")
-                    password environmental("artifactory_password")
+                    username property("artifactory_user")
+                    password property("artifactory_password")
                 }
             }
         }
@@ -101,13 +88,13 @@ subprojects {
 }
 
 artifactory {
-    this.contextUrl = environmental("artifactory_contextUrl")
+    this.contextUrl = property("artifactory_contextUrl")
 
     publish {
         repository {
-            repoKey = environmental("artifactory_release_local")
-            username = environmental("artifactory_user")
-            password = environmental("artifactory_password")
+            repoKey = property("artifactory_release_local")
+            username = property("artifactory_user")
+            password = property("artifactory_password")
             maven = true
         }
     }

@@ -1,5 +1,6 @@
 package gg.scala.store.velocity
 
+import com.google.gson.Gson
 import com.google.inject.Inject
 import com.mongodb.MongoClient
 import com.mongodb.MongoClientURI
@@ -10,6 +11,8 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
+import gg.scala.aware.AwareHub
+import gg.scala.aware.uri.WrappedAwareUri
 import gg.scala.store.ScalaDataStoreShared
 import gg.scala.store.connection.mongo.impl.details.DataStoreMongoConnectionDetails
 import gg.scala.store.connection.redis.impl.details.DataStoreRedisConnectionDetails
@@ -57,7 +60,26 @@ class ScalaDataStoreVelocity @Inject constructor(
 
     private var client: MongoClient? = null
 
-    fun createClient(): MongoClient
+    private fun configureAwareHub()
+    {
+        val wrappedURI = WrappedAwareUri(
+            address = redis.hostname,
+            port = redis.port,
+            password = redis.password,
+            index = redis.database ?: 0
+        )
+
+        val defaultGsonInstance = Gson()
+        if (redis.pubSubPublishTarget == "__default__")
+        {
+            AwareHub.configure(wrappedURI) { defaultGsonInstance }
+        } else
+        {
+            AwareHub.configure(wrappedURI, redis.pubSubPublishTarget) { defaultGsonInstance }
+        }
+    }
+
+    fun createMongoClient(): MongoClient
     {
         if (client == null)
         {
@@ -103,5 +125,8 @@ class ScalaDataStoreVelocity @Inject constructor(
                     it.uri, it.database
                 )
             }
+
+        createMongoClient()
+        configureAwareHub()
     }
 }
