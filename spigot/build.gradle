@@ -16,15 +16,11 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-reflect"
 
     implementation "gg.scala.aware:aware:1.2.1"
-    implementation "io.lettuce:lettuce-core:6.2.3.RELEASE.MOD"
+    compileOnly "io.lettuce:lettuce-core:6.4.0.RELEASE"
 
     implementation project(":shared")
 
     implementation "com.github.mkotb:ConfigAPI:e1c8df3f13"
-    implementation "org.mongodb:mongo-java-driver:3.12.12"
+    implementation "org.mongodb:mongo-java-driver:3.12.14"
     implementation "com.google.code.gson:gson:2.10.1"
-}
-
-shadowJar {
-    exclude "**/io/**"
 }
